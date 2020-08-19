@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 
 project(PLY_creator)
 
+include_directories(NeuroKinematics NeuroKinematics/)
+
+add_library(NeuroKinematics NeuroKinematics/NeuroKinematics.cpp)
+
 find_package(VTK COMPONENTS
   vtkCommonColor
   vtkCommonCore
@@ -15,6 +19,7 @@ find_package(VTK COMPONENTS
   vtkIOXML
   vtkInteractionStyle
   vtkPoissonReconstruction
+  vtkPowercrust
   vtkRenderingContextOpenGL2
   vtkRenderingCore
   vtkRenderingFreeType
@@ -30,15 +35,14 @@ message (STATUS "VTK_VERSION: ${VTK_VERSION}")
 if (VTK_VERSION VERSION_LESS "8.90.0")
   # old system
   include(${VTK_USE_FILE})
-  add_executable(main MACOSX_BUNDLE main.cpp )
-  target_link_libraries(main PRIVATE ${VTK_LIBRARIES})
+  add_executable(ForwardKinematics MACOSX_BUNDLE ForwardKinematics.cpp )
+  target_link_libraries(ForwardKinematics PRIVATE ${VTK_LIBRARIES})
 else ()
   # include all components
-  add_executable(main MACOSX_BUNDLE main.cpp )
-  target_link_libraries(main PRIVATE ${VTK_LIBRARIES})
+  add_executable(ForwardKinematics MACOSX_BUNDLE ForwardKinematics.cpp )
+  target_link_libraries(ForwardKinematics PRIVATE ${VTK_LIBRARIES} NeuroKinematics)
   # vtk_module_autoinit is needed
   vtk_module_autoinit(
-    TARGETS main
-    MODULES ${VTK_LIBRARIES}
-    )
+    TARGETS ForwardKinematics
+    MODULES ${VTK_LIBRARIES})
 endif () 
