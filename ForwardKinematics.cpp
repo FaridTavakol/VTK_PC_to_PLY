@@ -93,6 +93,8 @@ int nan_ckecker(Neuro_FK_outputs FK)
   }
   return 0;
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////main/////////////////////////////////////////////////////////////////
 
 int main(int argc, char *argv[])
 {
@@ -486,85 +488,142 @@ int main(int argc, char *argv[])
       vtkSmartPointer<vtkPolyData>::New();
   polydata->SetPoints(points);
   std::cout << "# of points: " << polydata->GetNumberOfPoints() << std::endl;
-  // Write the file
+  // Write the .VTP (point cloud) file
   vtkSmartPointer<vtkXMLPolyDataWriter> writer =
       vtkSmartPointer<vtkXMLPolyDataWriter>::New();
   writer->SetFileName("FK.vtp");
   writer->SetInputData(polydata);
-
+  writer->Write();
   // Optional - set the mode. The default is binary.
   //writer->SetDataModeToBinary();
   //writer->SetDataModeToAscii();
+  std::string filename{"FK.ply"};
 
-  writer->Write();
+  // choose the algorithm for surface generation
+  if (argc == 3)
+  {
+    if (atoi(argv[2]) == 0)
+    { // use PowerCrust algorithm
+      cerr << " Using PowerCrust Algorithm" << std::endl;
+      vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface =
+          vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
+      surface->SetInputData(polydata);
 
-  vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface =
-      vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
-  surface->SetInputData(polydata);
-  std::string filename = argv[1];
-  vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
-  plyWriter->SetFileName(filename.c_str());
-  plyWriter->SetInputConnection(surface->GetOutputPort());
-  std::cout << "Writing " << filename << std::endl;
-  plyWriter->Write();
-  return EXIT_SUCCESS;
+      std::string filename = argv[1];
+      vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
+      plyWriter->SetFileName(filename.c_str());
+      plyWriter->SetInputConnection(surface->GetOutputPort());
+      std::cout << "Writing " << filename << std::endl;
+      plyWriter->Write();
+      return EXIT_SUCCESS;
+    }
+    else if (atoi(argv[2]) == 1)
+    { // creating a surface using Poisson's algorithm
 
-  // // creating a surface using Poisson's algorithm
-  // vtkSmartPointer<vtkPoissonReconstruction> surface =
-  //     vtkSmartPointer<vtkPoissonReconstruction>::New();
-  // surface->SetDepth(12);
-  // int sampleSize = polydata->GetNumberOfPoints() * .00005;
-  // if (sampleSize < 10)
-  // {
-  //   sampleSize = 10;
-  // }
-  // if (polydata->GetPointData()->GetNormals())
-  // {
-  //   std::cout << "Using normals from input file" << std::endl;
-  //   surface->SetInputData(polydata);
-  // }
-  // else
-  // {
-  //   std::cout << "Estimating normals using PCANormalEstimation" << std::endl;
-  //   vtkSmartPointer<vtkPCANormalEstimation> normals =
-  //       vtkSmartPointer<vtkPCANormalEstimation>::New();
-  //   normals->SetInputData(polydata);
-  //   normals->SetSampleSize(sampleSize);
-  //   normals->SetNormalOrientationToGraphTraversal();
-  //   normals->FlipNormalsOff();
-  //   surface->SetInputConnection(normals->GetOutputPort());
-  // }
-
-  // // // Write the file
-  // // vtkSmartPointer<vtkXMLPolyDataWriter> writer =
-  // //     vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-  // // writer->SetFileName("test.vtp");
-  // // writer->SetInputData(polydata);
-
-  // // Optional - set the mode. The default is binary.
-  // //writer->SetDataModeToBinary();
-  // //writer->SetDataModeToAscii();
-
-  // // writer->Write();
-
-  // ///////////////////////////////////////////////////////////////////////
-  // std::string filename = argv[1];
-  // vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
-  // plyWriter->SetFileName(filename.c_str());
-  // plyWriter->SetInputConnection(surface->GetOutputPort());
-  // plyWriter->Write();
-
-  // return EXIT_SUCCESS;
-  // =================================Desired point checker =============================================================================
-  // AxialFeetTranslation = 13.5909;
-  // AxialHeadTranslation = 20.5828;
-  // LateralTranslation = 9.68;
-  // FK = Forward.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-  //                                LateralTranslation, ProbeInsertion,
-  //                                ProbeRotation, PitchRotation, YawRotation);
-  // std::cout << "zFrameToTreatment :" << FK.zFrameToTreatment << std::endl;
-
-  // std::cout << "X Position :" << FK.zFrameToTreatment(0, 3) << std::endl;
-  // std::cout << "Y Position :" << FK.zFrameToTreatment(1, 3) << std::endl;
-  // std::cout << "Z Position :" << FK.zFrameToTreatment(2, 3) << std::endl;
+      cerr << " Using Poisson's Algorithm" << std::endl;
+      vtkSmartPointer<vtkPoissonReconstruction> surface =
+          vtkSmartPointer<vtkPoissonReconstruction>::New();
+      surface->SetDepth(12);
+      int sampleSize = polydata->GetNumberOfPoints() * .00005;
+      if (sampleSize < 10)
+      {
+        sampleSize = 10;
+      }
+      if (polydata->GetPointData()->GetNormals())
+      {
+        std::cout << "Using normals from input file" << std::endl;
+        surface->SetInputData(polydata);
+      }
+      else
+      {
+        std::cout << "Estimating normals using PCANormalEstimation" << std::endl;
+        vtkSmartPointer<vtkPCANormalEstimation> normals =
+            vtkSmartPointer<vtkPCANormalEstimation>::New();
+        normals->SetInputData(polydata);
+        normals->SetSampleSize(sampleSize);
+        normals->SetNormalOrientationToGraphTraversal();
+        normals->FlipNormalsOff();
+        surface->SetInputConnection(normals->GetOutputPort());
+      }
+      std::string filename = argv[1];
+      vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
+      plyWriter->SetFileName(filename.c_str());
+      plyWriter->SetInputConnection(surface->GetOutputPort());
+      std::cout << "Writing " << filename << std::endl;
+      plyWriter->Write();
+      return EXIT_SUCCESS;
+    }
+    else
+    {
+      cerr << " Usage : " << std::endl;
+      cerr << " first argument : name.ply" << std::endl;
+      cerr << " second argument : 0 for PowerCrust Algorithm, 1 for Poisson's algorithm" << std::endl;
+      EXIT_FAILURE;
+    }
+  }
+  else
+  {
+    cerr << " Usage : " << std::endl;
+    cerr << " first argument : <name.ply>" << std::endl;
+    cerr << " second argument : <0> for PowerCrust Algorithm, <1> for Poisson's algorithm" << std::endl;
+    EXIT_FAILURE;
+  }
 }
+// // creating a surface using Poisson's algorithm
+// vtkSmartPointer<vtkPoissonReconstruction> surface =
+//     vtkSmartPointer<vtkPoissonReconstruction>::New();
+// surface->SetDepth(12);
+// int sampleSize = polydata->GetNumberOfPoints() * .00005;
+// if (sampleSize < 10)
+// {
+//   sampleSize = 10;
+// }
+// if (polydata->GetPointData()->GetNormals())
+// {
+//   std::cout << "Using normals from input file" << std::endl;
+//   surface->SetInputData(polydata);
+// }
+// else
+// {
+//   std::cout << "Estimating normals using PCANormalEstimation" << std::endl;
+//   vtkSmartPointer<vtkPCANormalEstimation> normals =
+//       vtkSmartPointer<vtkPCANormalEstimation>::New();
+//   normals->SetInputData(polydata);
+//   normals->SetSampleSize(sampleSize);
+//   normals->SetNormalOrientationToGraphTraversal();
+//   normals->FlipNormalsOff();
+//   surface->SetInputConnection(normals->GetOutputPort());
+// }
+
+// // // Write the file
+// // vtkSmartPointer<vtkXMLPolyDataWriter> writer =
+// //     vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+// // writer->SetFileName("test.vtp");
+// // writer->SetInputData(polydata);
+
+// // Optional - set the mode. The default is binary.
+// //writer->SetDataModeToBinary();
+// //writer->SetDataModeToAscii();
+
+// // writer->Write();
+
+// ///////////////////////////////////////////////////////////////////////
+// std::string filename = argv[1];
+// vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
+// plyWriter->SetFileName(filename.c_str());
+// plyWriter->SetInputConnection(surface->GetOutputPort());
+// plyWriter->Write();
+
+// return EXIT_SUCCESS;
+// =================================Desired point checker =============================================================================
+// AxialFeetTranslation = 13.5909;
+// AxialHeadTranslation = 20.5828;
+// LateralTranslation = 9.68;
+// FK = Forward.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+//                                LateralTranslation, ProbeInsertion,
+//                                ProbeRotation, PitchRotation, YawRotation);
+// std::cout << "zFrameToTreatment :" << FK.zFrameToTreatment << std::endl;
+
+// std::cout << "X Position :" << FK.zFrameToTreatment(0, 3) << std::endl;
+// std::cout << "Y Position :" << FK.zFrameToTreatment(1, 3) << std::endl;
+// std::cout << "Z Position :" << FK.zFrameToTreatment(2, 3) << std::endl;
