@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
   {
     AxialFeetTranslation = i;
     AxialHeadTranslation = j;
-    for (k = 0; k <= 37.5; k += 7.5)
+    for (k = 0; k <= 37.5; k += 3.75)
     {
       LateralTranslation = k;
       FK = Forward.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
