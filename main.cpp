@@ -32,40 +32,35 @@ namespace
 
 int main(int argc, char *argv[])
 {
-    // Create 10 points.
+    // Create points.
     vtkSmartPointer<vtkPoints> points =
         vtkSmartPointer<vtkPoints>::New();
 
-    // for (unsigned int i = 0; i < 10; ++i)
-    // {
-    //   points->InsertNextPoint(i, i, i);
-    // }
-
-    for (float i = 0; i <= 2; i += 0.2)
+    for (float i = 0; i <= 200; i += 2)
     {
-        for (float j = 0; j <= 2; j += 0.2)
+        for (float j = 0; j <= 200; j += 2)
         {
-            for (float k = 0; k <= 2; k += 2)
+            for (float k = 0; k <= 200; k += 200)
             {
                 points->InsertNextPoint(i, j, k);
             }
         }
     }
-    for (float j = 0; j <= 2; j += 0.2)
+    for (float j = 0; j <= 200; j += 2)
     {
-        for (float k = 0; k <= 2; k += 0.2)
+        for (float k = 0; k <= 200; k += 2)
         {
-            for (float i = 0; i <= 2; i += 2)
+            for (float i = 0; i <= 200; i += 200)
             {
                 points->InsertNextPoint(i, j, k);
             }
         }
     }
-    for (float k = 0; k <= 2; k += 0.2)
+    for (float k = 0; k <= 200; k += 2)
     {
-        for (float i = 0; i <= 2; i += 0.2)
+        for (float i = 0; i <= 200; i += 2)
         {
-            for (float j = 0; j <= 2; j += 2)
+            for (float j = 0; j <= 200; j += 200)
             {
                 points->InsertNextPoint(i, j, k);
             }

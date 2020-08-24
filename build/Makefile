@@ -76,17 +76,6 @@ CMAKE_BINARY_DIR = /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
@@ -97,6 +86,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/local/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -131,44 +131,84 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named ForwardKinematics
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 main
-.PHONY : main
+ForwardKinematics: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ForwardKinematics
+.PHONY : ForwardKinematics
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+ForwardKinematics/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/build
+.PHONY : ForwardKinematics/fast
 
-main.o: main.cpp.o
+#=============================================================================
+# Target rules for targets named NeuroKinematics
 
-.PHONY : main.o
+# Build rule for target.
+NeuroKinematics: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 NeuroKinematics
+.PHONY : NeuroKinematics
+
+# fast build rule for target.
+NeuroKinematics/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/build
+.PHONY : NeuroKinematics/fast
+
+ForwardKinematics.o: ForwardKinematics.cpp.o
+
+.PHONY : ForwardKinematics.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.o
-.PHONY : main.cpp.o
+ForwardKinematics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.o
+.PHONY : ForwardKinematics.cpp.o
 
-main.i: main.cpp.i
+ForwardKinematics.i: ForwardKinematics.cpp.i
 
-.PHONY : main.i
+.PHONY : ForwardKinematics.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.i
-.PHONY : main.cpp.i
+ForwardKinematics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.i
+.PHONY : ForwardKinematics.cpp.i
 
-main.s: main.cpp.s
+ForwardKinematics.s: ForwardKinematics.cpp.s
 
-.PHONY : main.s
+.PHONY : ForwardKinematics.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
-.PHONY : main.cpp.s
+ForwardKinematics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.s
+.PHONY : ForwardKinematics.cpp.s
+
+NeuroKinematics/NeuroKinematics.o: NeuroKinematics/NeuroKinematics.cpp.o
+
+.PHONY : NeuroKinematics/NeuroKinematics.o
+
+# target to build an object file
+NeuroKinematics/NeuroKinematics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.o
+.PHONY : NeuroKinematics/NeuroKinematics.cpp.o
+
+NeuroKinematics/NeuroKinematics.i: NeuroKinematics/NeuroKinematics.cpp.i
+
+.PHONY : NeuroKinematics/NeuroKinematics.i
+
+# target to preprocess a source file
+NeuroKinematics/NeuroKinematics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.i
+.PHONY : NeuroKinematics/NeuroKinematics.cpp.i
+
+NeuroKinematics/NeuroKinematics.s: NeuroKinematics/NeuroKinematics.cpp.s
+
+.PHONY : NeuroKinematics/NeuroKinematics.s
+
+# target to generate assembly for a file
+NeuroKinematics/NeuroKinematics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.s
+.PHONY : NeuroKinematics/NeuroKinematics.cpp.s
 
 # Help Target
 help:
@@ -178,10 +218,14 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... main"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... ForwardKinematics"
+	@echo "... NeuroKinematics"
+	@echo "... ForwardKinematics.o"
+	@echo "... ForwardKinematics.i"
+	@echo "... ForwardKinematics.s"
+	@echo "... NeuroKinematics/NeuroKinematics.o"
+	@echo "... NeuroKinematics/NeuroKinematics.i"
+	@echo "... NeuroKinematics/NeuroKinematics.s"
 .PHONY : help
 
 

@@ -73,7 +73,8 @@ CMAKE_BINARY_DIR = /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/main.dir/all
+all: CMakeFiles/ForwardKinematics.dir/all
+all: CMakeFiles/NeuroKinematics.dir/all
 
 .PHONY : all
 
@@ -83,36 +84,64 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/main.dir/clean
+clean: CMakeFiles/ForwardKinematics.dir/clean
+clean: CMakeFiles/NeuroKinematics.dir/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/main.dir
+# Target rules for target CMakeFiles/ForwardKinematics.dir
 
 # All Build rule for target.
-CMakeFiles/main.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=1,2 "Built target main"
-.PHONY : CMakeFiles/main.dir/all
+CMakeFiles/ForwardKinematics.dir/all: CMakeFiles/NeuroKinematics.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=1,2 "Built target ForwardKinematics"
+.PHONY : CMakeFiles/ForwardKinematics.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/main.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/main.dir/all
+CMakeFiles/ForwardKinematics.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/ForwardKinematics.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles 0
-.PHONY : CMakeFiles/main.dir/rule
+.PHONY : CMakeFiles/ForwardKinematics.dir/rule
 
 # Convenience name for target.
-main: CMakeFiles/main.dir/rule
+ForwardKinematics: CMakeFiles/ForwardKinematics.dir/rule
 
-.PHONY : main
+.PHONY : ForwardKinematics
 
 # clean rule for target.
-CMakeFiles/main.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/clean
-.PHONY : CMakeFiles/main.dir/clean
+CMakeFiles/ForwardKinematics.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/clean
+.PHONY : CMakeFiles/ForwardKinematics.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/NeuroKinematics.dir
+
+# All Build rule for target.
+CMakeFiles/NeuroKinematics.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=3,4 "Built target NeuroKinematics"
+.PHONY : CMakeFiles/NeuroKinematics.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/NeuroKinematics.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/NeuroKinematics.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles 0
+.PHONY : CMakeFiles/NeuroKinematics.dir/rule
+
+# Convenience name for target.
+NeuroKinematics: CMakeFiles/NeuroKinematics.dir/rule
+
+.PHONY : NeuroKinematics
+
+# clean rule for target.
+CMakeFiles/NeuroKinematics.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/clean
+.PHONY : CMakeFiles/NeuroKinematics.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
