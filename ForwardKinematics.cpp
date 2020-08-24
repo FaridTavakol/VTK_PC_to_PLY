@@ -296,13 +296,13 @@ int main(int argc, char *argv[])
   {
     AxialFeetTranslation = i;
 
-    for (k = 0; k <= 37.5; ++k)
+    for (k = 0; k <= 37.5; k += 3.75)
     {
       LateralTranslation = k;
 
       if (abs(AxialHeadTranslation - AxialFeetTranslation) == Diff) // highest lvl
       {
-        for (Rx = 0; Rx >= -90; Rx -= 1.5)
+        for (Rx = 0; Rx >= -90; Rx -= 9)
         {
           PitchRotation = 0;
           YawRotation = Rx * pi / 180;
@@ -504,7 +504,7 @@ int main(int argc, char *argv[])
   {
     if (atoi(argv[2]) == 0)
     { // use PowerCrust algorithm
-      cerr << " Using PowerCrust Algorithm" << std::endl;
+      cerr << "Using PowerCrust Algorithm" << std::endl;
       vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface =
           vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
       surface->SetInputData(polydata);
@@ -520,7 +520,7 @@ int main(int argc, char *argv[])
     else if (atoi(argv[2]) == 1)
     { // creating a surface using Poisson's algorithm
 
-      cerr << " Using Poisson's Algorithm" << std::endl;
+      cerr << "Using Poisson's Algorithm" << std::endl;
       vtkSmartPointer<vtkPoissonReconstruction> surface =
           vtkSmartPointer<vtkPoissonReconstruction>::New();
       surface->SetDepth(12);
@@ -569,61 +569,3 @@ int main(int argc, char *argv[])
     EXIT_FAILURE;
   }
 }
-// // creating a surface using Poisson's algorithm
-// vtkSmartPointer<vtkPoissonReconstruction> surface =
-//     vtkSmartPointer<vtkPoissonReconstruction>::New();
-// surface->SetDepth(12);
-// int sampleSize = polydata->GetNumberOfPoints() * .00005;
-// if (sampleSize < 10)
-// {
-//   sampleSize = 10;
-// }
-// if (polydata->GetPointData()->GetNormals())
-// {
-//   std::cout << "Using normals from input file" << std::endl;
-//   surface->SetInputData(polydata);
-// }
-// else
-// {
-//   std::cout << "Estimating normals using PCANormalEstimation" << std::endl;
-//   vtkSmartPointer<vtkPCANormalEstimation> normals =
-//       vtkSmartPointer<vtkPCANormalEstimation>::New();
-//   normals->SetInputData(polydata);
-//   normals->SetSampleSize(sampleSize);
-//   normals->SetNormalOrientationToGraphTraversal();
-//   normals->FlipNormalsOff();
-//   surface->SetInputConnection(normals->GetOutputPort());
-// }
-
-// // // Write the file
-// // vtkSmartPointer<vtkXMLPolyDataWriter> writer =
-// //     vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-// // writer->SetFileName("test.vtp");
-// // writer->SetInputData(polydata);
-
-// // Optional - set the mode. The default is binary.
-// //writer->SetDataModeToBinary();
-// //writer->SetDataModeToAscii();
-
-// // writer->Write();
-
-// ///////////////////////////////////////////////////////////////////////
-// std::string filename = argv[1];
-// vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
-// plyWriter->SetFileName(filename.c_str());
-// plyWriter->SetInputConnection(surface->GetOutputPort());
-// plyWriter->Write();
-
-// return EXIT_SUCCESS;
-// =================================Desired point checker =============================================================================
-// AxialFeetTranslation = 13.5909;
-// AxialHeadTranslation = 20.5828;
-// LateralTranslation = 9.68;
-// FK = Forward.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-//                                LateralTranslation, ProbeInsertion,
-//                                ProbeRotation, PitchRotation, YawRotation);
-// std::cout << "zFrameToTreatment :" << FK.zFrameToTreatment << std::endl;
-
-// std::cout << "X Position :" << FK.zFrameToTreatment(0, 3) << std::endl;
-// std::cout << "Y Position :" << FK.zFrameToTreatment(1, 3) << std::endl;
-// std::cout << "Z Position :" << FK.zFrameToTreatment(2, 3) << std::endl;
