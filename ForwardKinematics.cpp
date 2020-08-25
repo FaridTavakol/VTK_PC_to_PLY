@@ -508,7 +508,6 @@ int main(int argc, char *argv[])
       vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface =
           vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
       surface->SetInputData(polydata);
-
       std::string filename = argv[1];
       vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
       plyWriter->SetFileName(filename.c_str());

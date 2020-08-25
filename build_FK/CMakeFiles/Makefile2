@@ -73,6 +73,7 @@ CMAKE_BINARY_DIR = /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/IK_Solver.dir/all
 all: CMakeFiles/ForwardKinematics.dir/all
 all: CMakeFiles/NeuroKinematics.dir/all
 
@@ -84,10 +85,38 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/IK_Solver.dir/clean
 clean: CMakeFiles/ForwardKinematics.dir/clean
 clean: CMakeFiles/NeuroKinematics.dir/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/IK_Solver.dir
+
+# All Build rule for target.
+CMakeFiles/IK_Solver.dir/all: CMakeFiles/NeuroKinematics.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/IK_Solver.dir/build.make CMakeFiles/IK_Solver.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/IK_Solver.dir/build.make CMakeFiles/IK_Solver.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_FK/CMakeFiles --progress-num=3,4 "Built target IK_Solver"
+.PHONY : CMakeFiles/IK_Solver.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/IK_Solver.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_FK/CMakeFiles 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/IK_Solver.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_FK/CMakeFiles 0
+.PHONY : CMakeFiles/IK_Solver.dir/rule
+
+# Convenience name for target.
+IK_Solver: CMakeFiles/IK_Solver.dir/rule
+
+.PHONY : IK_Solver
+
+# clean rule for target.
+CMakeFiles/IK_Solver.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/IK_Solver.dir/build.make CMakeFiles/IK_Solver.dir/clean
+.PHONY : CMakeFiles/IK_Solver.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/ForwardKinematics.dir
@@ -123,7 +152,7 @@ CMakeFiles/ForwardKinematics.dir/clean:
 CMakeFiles/NeuroKinematics.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_FK/CMakeFiles --progress-num=3,4 "Built target NeuroKinematics"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_FK/CMakeFiles --progress-num=5,6 "Built target NeuroKinematics"
 .PHONY : CMakeFiles/NeuroKinematics.dir/all
 
 # Build rule for subdir invocation for target.

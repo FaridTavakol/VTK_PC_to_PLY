@@ -1,3 +1,32 @@
+#include <vtkCellArray.h>
+#include <vtkPoints.h>
+#include <vtkXMLPolyDataWriter.h>
+#include <vtkPolyData.h>
+#include <vtkPLYWriter.h>
+#include <vtkPLYReader.h>
+#include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkActor.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkSmartPointer.h>
+#include <vtkBYUReader.h>
+#include <vtkOBJReader.h>
+#include <vtkPolyDataReader.h>
+#include <vtkSTLReader.h>
+#include <vtkXMLPolyDataReader.h>
+#include <vtkPointSource.h>
+#include <vtkPoissonReconstruction.h>
+#include <vtkPCANormalEstimation.h>
+#include <vtkPointData.h>
+#include <vtkProperty.h>
+#include <vtkCamera.h>
+#include <vtkNamedColors.h>
+#include <vtksys/SystemTools.hxx>
+#include <vtkPowerCrustSurfaceReconstruction.h>
+
 #include "NeuroKinematics/NeuroKinematics.hpp"
 #include <iostream>
 #include <string>
@@ -150,11 +179,13 @@ Eigen::Matrix4d registration()
 };
 // Y range in the robot frame should be between 158.5 mm - 218
 // This script calculates the desired joint values for joints 1-3 to place the RCM in the entry point
-int main()
+int main(int argc, char *argv[])
 {
-    NeuroKinematics Forward(&probe_init);
-    ofstream myout("sub.xyz");
+    // Create points.
+    vtkSmartPointer<vtkPoints> points =
+        vtkSmartPointer<vtkPoints>::New();
 
+    NeuroKinematics Forward(&probe_init);
     while (true)
     {
 
@@ -243,7 +274,7 @@ int main()
                                                    Input_robot(2), ProbeInsertion + Pi_max,
                                                    ProbeRotation, PitchRotation, YawRotation);
                     nan_ckecker(FK);
-                    myout << FK.zFrameToTreatment(0, 3) << " " << FK.zFrameToTreatment(1, 3) << " " << FK.zFrameToTreatment(2, 3) << " 0.00 0.00 0.00" << endl;
+                    points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
                 }
             }
             // Loop for creating the Sides of Sub-Workspace
@@ -261,7 +292,7 @@ int main()
                                                        Input_robot(2), ProbeInsertion,
                                                        ProbeRotation, PitchRotation, YawRotation);
                         nan_ckecker(FK);
-                        myout << FK.zFrameToTreatment(0, 3) << " " << FK.zFrameToTreatment(1, 3) << " " << FK.zFrameToTreatment(2, 3) << " 0.00 0.00 0.00" << endl;
+                        points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
                     }
                 }
             }
@@ -282,7 +313,7 @@ int main()
                                                        Input_robot(2), ProbeInsertion,
                                                        ProbeRotation, PitchRotation, YawRotation);
                         nan_ckecker(FK);
-                        myout << FK.zFrameToTreatment(0, 3) << " " << FK.zFrameToTreatment(1, 3) << " " << FK.zFrameToTreatment(2, 3) << " 0.00 0.00 0.00" << endl;
+                        points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
                     }
                 }
             }
@@ -291,7 +322,7 @@ int main()
                                            Input_robot(2), ProbeInsertion - 40,
                                            ProbeRotation, PitchRotation, YawRotation);
             nan_ckecker(FK);
-            myout << FK.zFrameToTreatment(0, 3) << " " << FK.zFrameToTreatment(1, 3) << " " << FK.zFrameToTreatment(2, 3) << " 0.00 0.00 0.00" << endl;
+            points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
 
             break;
         }
@@ -300,6 +331,88 @@ int main()
             std::cout << "Your entry point is out of reach! Please choose another point and try again!" << std::endl;
         }
     }
-    myout.close();
-    return 0;
+    // Create a polydata object and add the points to it.
+    vtkSmartPointer<vtkPolyData> polydata =
+        vtkSmartPointer<vtkPolyData>::New();
+    polydata->SetPoints(points);
+    std::cout << "# of points: " << polydata->GetNumberOfPoints() << std::endl;
+    // Write the .VTP (point cloud) file
+    vtkSmartPointer<vtkXMLPolyDataWriter> writer =
+        vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+    writer->SetFileName("SubWorkSpace.vtp");
+    writer->SetInputData(polydata);
+    writer->Write();
+    // Optional - set the mode. The default is binary.
+    //writer->SetDataModeToBinary();
+    //writer->SetDataModeToAscii();
+    std::string filename{};
+
+    // choose the algorithm for surface generation
+    if (argc == 3)
+    {
+        if (atoi(argv[2]) == 0)
+        { // use PowerCrust algorithm
+            cerr << "Using PowerCrust Algorithm" << std::endl;
+            vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface =
+                vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
+            surface->SetInputData(polydata);
+            filename = argv[1];
+            vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
+            plyWriter->SetFileName(filename.c_str());
+            plyWriter->SetInputConnection(surface->GetOutputPort());
+            std::cout << "Writing " << filename << std::endl;
+            plyWriter->Write();
+            return EXIT_SUCCESS;
+        }
+        else if (atoi(argv[2]) == 1)
+        { // creating a surface using Poisson's algorithm
+
+            cerr << "Using Poisson's Algorithm" << std::endl;
+            vtkSmartPointer<vtkPoissonReconstruction> surface =
+                vtkSmartPointer<vtkPoissonReconstruction>::New();
+            surface->SetDepth(12);
+            int sampleSize = polydata->GetNumberOfPoints() * .00005;
+            if (sampleSize < 10)
+            {
+                sampleSize = 10;
+            }
+            if (polydata->GetPointData()->GetNormals())
+            {
+                std::cout << "Using normals from input file" << std::endl;
+                surface->SetInputData(polydata);
+            }
+            else
+            {
+                std::cout << "Estimating normals using PCANormalEstimation" << std::endl;
+                vtkSmartPointer<vtkPCANormalEstimation> normals =
+                    vtkSmartPointer<vtkPCANormalEstimation>::New();
+                normals->SetInputData(polydata);
+                normals->SetSampleSize(sampleSize);
+                normals->SetNormalOrientationToGraphTraversal();
+                normals->FlipNormalsOff();
+                surface->SetInputConnection(normals->GetOutputPort());
+            }
+            filename = argv[1];
+            vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
+            plyWriter->SetFileName(filename.c_str());
+            plyWriter->SetInputConnection(surface->GetOutputPort());
+            std::cout << "Writing " << filename << std::endl;
+            plyWriter->Write();
+            return EXIT_SUCCESS;
+        }
+        else
+        {
+            cerr << " Usage : " << std::endl;
+            cerr << " first argument : name.ply" << std::endl;
+            cerr << " second argument : 0 for PowerCrust Algorithm, 1 for Poisson's algorithm" << std::endl;
+            EXIT_FAILURE;
+        }
+    }
+    else
+    {
+        cerr << " Usage : " << std::endl;
+        cerr << " first argument : <name.ply>" << std::endl;
+        cerr << " second argument : <0> for PowerCrust Algorithm, <1> for Poisson's algorithm" << std::endl;
+        EXIT_FAILURE;
+    }
 }
