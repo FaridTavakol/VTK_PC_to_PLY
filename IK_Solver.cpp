@@ -20,6 +20,7 @@
 #include <vtkPointSource.h>
 #include <vtkPoissonReconstruction.h>
 #include <vtkPCANormalEstimation.h>
+#include <vtkPCACurvatureEstimation.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
 #include <vtkCamera.h>
@@ -71,12 +72,13 @@ Probe probe_init = {
 // Axial Feet Translation range : -70.00 - 75.01 -> Experimental range from -7 to 233 inclusive
 double i{}, j{}, k{}; //counter initialization
 const double pi{3.141};
-const double RyF_max{-37}; // Pitch rotation max
-const double RyB_max{+30}; // Pitch rotation min
-const double Rx_min{-90};  // Yaw rotation min
-const double Rx_max{0};    // Yaw rotation max
-const double Pi_min{0};    // Probe insertion min
-const double Pi_max{40};   // Probe insertion max
+const double RyF_max{-37};     // Pitch rotation max
+const double RyB_max{+30};     // Pitch rotation min
+const double Rx_min{-90};      // Yaw rotation min
+const double Rx_max{0};        // Yaw rotation max
+const double Pi_min{0};        // Probe insertion min
+const double Pi_max{40};       // Probe insertion max
+const double Pi_default{31.5}; // Default insertion that puts the tip of the probe at the RCM point
 
 int nan_checker_row{};
 int nan_checker_col{};
@@ -277,11 +279,12 @@ int main(int argc, char *argv[])
                     points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
                 }
             }
-            // Loop for creating the Sides of Sub-Workspace
-            for (k = Pi_min + 2; k <= Pi_max; k += 2)
+            // // Loop for creating the Sides of Sub-Workspace
+            ProbeInsertion += 8;
+            for (k = Pi_min + 8; k <= Pi_max; k += 0.5)
             {
-                ProbeInsertion += 2;
-                for (i = 0; i >= Rx_min; i -= 3) // outer surface
+                ProbeInsertion += 0.5;
+                for (i = 0; i >= Rx_min; i -= 1) // outer surface
                 {
                     YawRotation = i * pi / 180;
                     for (j = RyF_max; j <= RyB_max; j += 67) //4.5
@@ -296,12 +299,55 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            ProbeInsertion = ProbeInsertion - 40;
-            for (k = Pi_min + 2; k <= Pi_max; k += 2)
+            ProbeInsertion = Pi_default + 8;
+            for (k = Pi_min + 8; k <= Pi_max; k += 0.5)
             {
-                ProbeInsertion += 2;
+                ProbeInsertion += 0.5;
 
-                for (j = RyF_max; j <= RyB_max; j += 4.5) //4.5
+                for (j = RyF_max; j <= RyB_max; j += 6.7 / 4) //4.5
+                {
+                    PitchRotation = j * pi / 180;
+
+                    for (i = 0; i >= Rx_min; i -= 90) // outer surface
+                    {
+                        YawRotation = i * pi / 180;
+
+                        FK = Forward.ForwardKinematics(Input_robot(0), Input_robot(1),
+                                                       Input_robot(2), ProbeInsertion,
+                                                       ProbeRotation, PitchRotation, YawRotation);
+                        nan_ckecker(FK);
+                        points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+                    }
+                }
+            }
+            // loop for adding details to the top of the workspace
+            // resetting the kinematic values
+            ProbeInsertion = Pi_default; //Back to default value of 31.5 where the tip is at RCM
+
+            for (k = Pi_min + 0.5; k <= 8; k += 0.5)
+            {
+                ProbeInsertion += 0.5;
+                for (i = 0; i >= Rx_min; i -= 1) // outer surface
+                {
+                    YawRotation = i * pi / 180;
+                    for (j = RyF_max; j <= RyB_max; j += 67) //4.5
+                    {
+                        PitchRotation = j * pi / 180;
+
+                        FK = Forward.ForwardKinematics(Input_robot(0), Input_robot(1),
+                                                       Input_robot(2), ProbeInsertion,
+                                                       ProbeRotation, PitchRotation, YawRotation);
+                        nan_ckecker(FK);
+                        points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+                    }
+                }
+            }
+            ProbeInsertion = Pi_default;
+            for (k = Pi_min + 0.1; k <= 8; k += 0.1)
+            {
+                ProbeInsertion += 0.1;
+
+                for (j = RyF_max; j <= RyB_max; j += 6.7 / 8) //4.5
                 {
                     PitchRotation = j * pi / 180;
 
@@ -319,7 +365,7 @@ int main(int argc, char *argv[])
             }
             // just a single point for the the top of the workspace
             FK = Forward.ForwardKinematics(Input_robot(0), Input_robot(1),
-                                           Input_robot(2), ProbeInsertion - 40,
+                                           Input_robot(2), Pi_default,
                                            ProbeRotation, PitchRotation, YawRotation);
             nan_ckecker(FK);
             points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
