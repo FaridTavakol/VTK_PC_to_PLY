@@ -74,25 +74,8 @@ double i{}, j{}, k{}, l{}; //counter initialization
 
 int nan_checker_row{};
 int nan_checker_col{};
-// Function to search for nan values in the FK output
-int nan_ckecker(Neuro_FK_outputs FK)
-{
-  for (nan_checker_row = 0; nan_checker_row < 4; ++nan_checker_row) // Loop for checking NaN
-  {
-    for (nan_checker_col = 0; nan_checker_col < 4; ++nan_checker_col)
-    {
-
-      if (isnan(FK.zFrameToTreatment(nan_checker_row, nan_checker_col)))
-      {
-        std::cout << "row :" << nan_checker_row << "cloumn :"
-                  << "is nan!\n";
-        return 1;
-        break;
-      }
-    }
-  }
-  return 0;
-};
+vtkSmartPointer<vtkPoints> create_RCM_workspace();
+int nan_ckecker(Neuro_FK_outputs FK);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////main/////////////////////////////////////////////////////////////////
 
@@ -457,7 +440,7 @@ int main(int argc, char *argv[])
               points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
             }
           }
-          else if (k == 37.5 && abs(j) != Diff - 1) // towards bore from bottom to a point before max heigth
+          else if (k == 37.5 && abs(j) != Diff - 1) // towards bore from bottom to a point before max height
           {
             PitchRotation = RyB_max;
             for (Rx = 0; Rx >= -90; Rx -= 9)
@@ -483,88 +466,273 @@ int main(int argc, char *argv[])
     AxialHeadTranslation = 0;
     AxialFeetTranslation = 0;
   }
-  // Create a polydata object and add the points to it.
-  vtkSmartPointer<vtkPolyData> polydata =
-      vtkSmartPointer<vtkPolyData>::New();
-  polydata->SetPoints(points);
-  std::cout << "# of points: " << polydata->GetNumberOfPoints() << std::endl;
-  // Write the .VTP (point cloud) file
-  vtkSmartPointer<vtkXMLPolyDataWriter> writer =
-      vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-  writer->SetFileName("FK.vtp");
-  writer->SetInputData(polydata);
-  writer->Write();
-  // Optional - set the mode. The default is binary.
-  //writer->SetDataModeToBinary();
-  //writer->SetDataModeToAscii();
-  std::string filename{"FK.ply"};
-
-  // choose the algorithm for surface generation
-  if (argc == 3)
+  if (argc == 4)
   {
-    if (atoi(argv[2]) == 0)
-    { // use PowerCrust algorithm
+    if (atoi(argv[3]) == 0)
+    {
+      vtkSmartPointer<vtkPoints> RCM_points = vtkSmartPointer<vtkPoints>::New();
+      RCM_points = create_RCM_workspace();
+      // Create a polydata object and add the points to it.
+      vtkSmartPointer<vtkPolyData> polydata_RCM =
+          vtkSmartPointer<vtkPolyData>::New();
+      polydata_RCM->SetPoints(RCM_points);
+      std::cout << "# of points: " << polydata_RCM->GetNumberOfPoints() << std::endl;
+      // Write the .VTP (point cloud) file
+      vtkSmartPointer<vtkXMLPolyDataWriter> writer_RCM =
+          vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+      writer_RCM->SetFileName("RCM.vtp");
+      writer_RCM->SetInputData(polydata_RCM);
+      writer_RCM->Write();
+      // Optional - set the mode. The default is binary.
+      //writer->SetDataModeToBinary();
+      //writer->SetDataModeToAscii();
       cerr << "Using PowerCrust Algorithm" << std::endl;
-      vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface =
+      vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface_RCM =
           vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
-      surface->SetInputData(polydata);
-      std::string filename = argv[1];
-      vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
-      plyWriter->SetFileName(filename.c_str());
-      plyWriter->SetInputConnection(surface->GetOutputPort());
-      std::cout << "Writing " << filename << std::endl;
-      plyWriter->Write();
-      return EXIT_SUCCESS;
+      surface_RCM->SetInputData(polydata_RCM);
+      std::string filename_RCM_ply = "RCM.ply";
+      vtkSmartPointer<vtkPLYWriter> plyWriter_RCM = vtkSmartPointer<vtkPLYWriter>::New();
+      plyWriter_RCM->SetFileName(filename_RCM_ply.c_str());
+      plyWriter_RCM->SetInputConnection(surface_RCM->GetOutputPort());
+      std::cout << "Writing " << filename_RCM_ply << std::endl;
+      plyWriter_RCM->Write();
     }
-    else if (atoi(argv[2]) == 1)
-    { // creating a surface using Poisson's algorithm
 
-      cerr << "Using Poisson's Algorithm" << std::endl;
-      vtkSmartPointer<vtkPoissonReconstruction> surface =
-          vtkSmartPointer<vtkPoissonReconstruction>::New();
-      surface->SetDepth(12);
-      int sampleSize = polydata->GetNumberOfPoints() * .00005;
-      if (sampleSize < 10)
-      {
-        sampleSize = 10;
-      }
-      if (polydata->GetPointData()->GetNormals())
-      {
-        std::cout << "Using normals from input file" << std::endl;
+    // Create a polydata object and add the points to it.
+    vtkSmartPointer<vtkPolyData> polydata =
+        vtkSmartPointer<vtkPolyData>::New();
+    polydata->SetPoints(points);
+    std::cout << "# of points: " << polydata->GetNumberOfPoints() << std::endl;
+    // Write the .VTP (point cloud) file
+    vtkSmartPointer<vtkXMLPolyDataWriter> writer =
+        vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+    writer->SetFileName("FK.vtp");
+    writer->SetInputData(polydata);
+    writer->Write();
+    // Optional - set the mode. The default is binary.
+    //writer->SetDataModeToBinary();
+    //writer->SetDataModeToAscii();
+    std::string filename{"FK.ply"};
+
+    // choose the algorithm for surface generation
+    if (argc == 4 || argc == 3)
+    {
+      if (atoi(argv[2]) == 0)
+      { // use PowerCrust algorithm
+        cerr << "Using PowerCrust Algorithm" << std::endl;
+        vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface =
+            vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
         surface->SetInputData(polydata);
+        std::string filename = argv[1];
+        vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
+        plyWriter->SetFileName(filename.c_str());
+        plyWriter->SetInputConnection(surface->GetOutputPort());
+        std::cout << "Writing " << filename << std::endl;
+        plyWriter->Write();
+        return EXIT_SUCCESS;
+      }
+      else if (atoi(argv[2]) == 1)
+      { // creating a surface using Poisson's algorithm
+
+        cerr << "Using Poisson's Algorithm" << std::endl;
+        vtkSmartPointer<vtkPoissonReconstruction> surface =
+            vtkSmartPointer<vtkPoissonReconstruction>::New();
+        surface->SetDepth(12);
+        int sampleSize = polydata->GetNumberOfPoints() * .00005;
+        if (sampleSize < 10)
+        {
+          sampleSize = 10;
+        }
+        if (polydata->GetPointData()->GetNormals())
+        {
+          std::cout << "Using normals from input file" << std::endl;
+          surface->SetInputData(polydata);
+        }
+        else
+        {
+          std::cout << "Estimating normals using PCANormalEstimation" << std::endl;
+          vtkSmartPointer<vtkPCANormalEstimation> normals =
+              vtkSmartPointer<vtkPCANormalEstimation>::New();
+          normals->SetInputData(polydata);
+          normals->SetSampleSize(sampleSize);
+          normals->SetNormalOrientationToGraphTraversal();
+          normals->FlipNormalsOff();
+          surface->SetInputConnection(normals->GetOutputPort());
+        }
+        std::string filename = argv[1];
+        vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
+        plyWriter->SetFileName(filename.c_str());
+        plyWriter->SetInputConnection(surface->GetOutputPort());
+        std::cout << "Writing " << filename << std::endl;
+        plyWriter->Write();
+        return EXIT_SUCCESS;
       }
       else
       {
-        std::cout << "Estimating normals using PCANormalEstimation" << std::endl;
-        vtkSmartPointer<vtkPCANormalEstimation> normals =
-            vtkSmartPointer<vtkPCANormalEstimation>::New();
-        normals->SetInputData(polydata);
-        normals->SetSampleSize(sampleSize);
-        normals->SetNormalOrientationToGraphTraversal();
-        normals->FlipNormalsOff();
-        surface->SetInputConnection(normals->GetOutputPort());
+        cerr << " Usage : " << std::endl;
+        cerr << " first argument : name.ply" << std::endl;
+        cerr << " second argument : 0 for PowerCrust Algorithm, 1 for Poisson's algorithm" << std::endl;
+        EXIT_FAILURE;
       }
-      std::string filename = argv[1];
-      vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
-      plyWriter->SetFileName(filename.c_str());
-      plyWriter->SetInputConnection(surface->GetOutputPort());
-      std::cout << "Writing " << filename << std::endl;
-      plyWriter->Write();
-      return EXIT_SUCCESS;
     }
     else
     {
       cerr << " Usage : " << std::endl;
-      cerr << " first argument : name.ply" << std::endl;
-      cerr << " second argument : 0 for PowerCrust Algorithm, 1 for Poisson's algorithm" << std::endl;
+      cerr << " first argument : <name.ply>" << std::endl;
+      cerr << " second argument : <0> for PowerCrust Algorithm, <1> for Poisson's algorithm" << std::endl;
       EXIT_FAILURE;
     }
   }
-  else
+}
+// Method to search for nan values in the FK output
+int nan_ckecker(Neuro_FK_outputs FK)
+{
+  for (nan_checker_row = 0; nan_checker_row < 4; ++nan_checker_row) // Loop for checking NaN
   {
-    cerr << " Usage : " << std::endl;
-    cerr << " first argument : <name.ply>" << std::endl;
-    cerr << " second argument : <0> for PowerCrust Algorithm, <1> for Poisson's algorithm" << std::endl;
-    EXIT_FAILURE;
+    for (nan_checker_col = 0; nan_checker_col < 4; ++nan_checker_col)
+    {
+
+      if (isnan(FK.zFrameToTreatment(nan_checker_row, nan_checker_col)))
+      {
+        std::cout << "row :" << nan_checker_row << "cloumn :"
+                  << "is nan!\n";
+        return 1;
+        break;
+      }
+    }
   }
+  return 0;
+};
+
+// Method to create the RCM workspace used to visualize the general workspace in Slicer
+vtkSmartPointer<vtkPoints> create_RCM_workspace()
+{
+  // Create points.
+  vtkSmartPointer<vtkPoints> points_RCM =
+      vtkSmartPointer<vtkPoints>::New();
+
+  //----------------------------------FK computation --------------------------------------------------------
+  NeuroKinematics Forward(&probe_init);
+  Neuro_FK_outputs FK{};
+  AxialHeadTranslation = 0.0;
+  AxialFeetTranslation = 0.0;
+  LateralTranslation = 0.0;
+  PitchRotation = 0.0;
+  YawRotation = 0.0;
+  ProbeInsertion = 31.5;
+  ProbeRotation = 0.0;
+  // loop for visualizing the bottom
+  double i{}, j{}, k{}, l{};                     // initializing the counters
+  for (i = 0, j = 0; i < 87; i += 8.6, j += 8.6) //75
+  {
+    AxialFeetTranslation = i;
+    AxialHeadTranslation = j;
+    for (k = 0; k <= 37.5; k += 7.5)
+    {
+      LateralTranslation = k;
+      FK = Forward.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                     LateralTranslation, ProbeInsertion,
+                                     ProbeRotation, PitchRotation, YawRotation);
+      points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+    }
+  }
+
+  // Loop for visualizing the top
+  for (i = 0, j = -71; i < 157; i += 6, j += 6) //75
+  {
+    AxialFeetTranslation = i;
+    AxialHeadTranslation = j;
+    for (k = 0; k <= 37.5; k += 7.5)
+    {
+      LateralTranslation = k;
+      FK = Forward.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                     LateralTranslation, ProbeInsertion,
+                                     ProbeRotation, PitchRotation, YawRotation);
+      points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+    }
+  }
+  const double Diff{71};
+  AxialFeetTranslation = 0;
+  AxialHeadTranslation = 0;
+
+  int nan_checker_row{};
+  int nan_checker_col{};
+  i = 0;
+  j = -1;
+  k = 0;
+  // Loop for creating the feet face
+  for (j = -1; Diff > abs(AxialHeadTranslation - AxialFeetTranslation); --j)
+  {
+    AxialHeadTranslation = j;
+    for (k = 0; k <= 37.5; k += 7.5)
+    {
+      LateralTranslation = k;
+      FK = Forward.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                     LateralTranslation, ProbeInsertion,
+                                     ProbeRotation, PitchRotation, YawRotation);
+      points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+    }
+  }
+
+  // Loop for creating the Head face
+  AxialHeadTranslation = 86;
+  AxialFeetTranslation = 86;
+  nan_checker_row = 0;
+  nan_checker_col = 0;
+  i = 86;
+  j = 86;
+  k = 0;
+
+  for (i = 87; Diff > abs(AxialHeadTranslation - AxialFeetTranslation); i += 2)
+  {
+    AxialFeetTranslation = i;
+    for (k = 0; k <= 37.5; k += 7.5)
+    {
+      LateralTranslation = k;
+      FK = Forward.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                     LateralTranslation, ProbeInsertion,
+                                     ProbeRotation, PitchRotation, YawRotation);
+      points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+    }
+  }
+
+  //loop for creating the sides
+  AxialFeetTranslation = 0;
+  AxialHeadTranslation = 0;
+  LateralTranslation = 0;
+  nan_checker_row = 0;
+  nan_checker_col = 0;
+  i = 0;
+  j = -1;
+  k = 0;
+  double ii{};
+  // double jj{};
+  double min_travel{86};
+  double max_travel{200};
+  // double Old_AxialHeadTranslation{};
+  for (j = -1; Diff > abs(j); --j)
+  {
+    AxialHeadTranslation = j;
+    ++min_travel;
+
+    for (ii = 0; ii <= min_travel && min_travel <= max_travel; ii += +4)
+    {
+      AxialHeadTranslation += 4;
+      AxialFeetTranslation += 4;
+
+      for (k = 0; k <= 37.5; k += 37.5)
+      {
+        LateralTranslation = k;
+        FK = Forward.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                       LateralTranslation, ProbeInsertion,
+                                       ProbeRotation, PitchRotation, YawRotation);
+        points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+      }
+    }
+    AxialHeadTranslation = 0;
+    AxialFeetTranslation = 0;
+    LateralTranslation = 0;
+  }
+
+  return points_RCM;
 }
