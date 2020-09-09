@@ -620,6 +620,7 @@ vtkSmartPointer<vtkPoints> create_RCM_workspace()
   PitchRotation = 0.0;
   YawRotation = 0.0;
   ProbeInsertion = 31.5;
+  // ProbeInsertion = 0.0;
   ProbeRotation = 0.0;
   // loop for visualizing the bottom
   double i{}, j{}, k{}, l{};                     // initializing the counters
