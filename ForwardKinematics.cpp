@@ -26,7 +26,6 @@
 #include <vtkNamedColors.h>
 #include <vtksys/SystemTools.hxx>
 #include <vtkPowerCrustSurfaceReconstruction.h>
-
 #include "NeuroKinematics/NeuroKinematics.hpp"
 #include <iostream>
 #include <string>
@@ -35,12 +34,7 @@
 #include <fstream>
 using std::endl;
 using std::ofstream;
-// namespace
-// {
-//   vtkSmartPointer<vtkPolyData> ReadPolyData(const char *fileName);
-// }
 
-// Initializing the joint variables for use in the FK function
 double AxialHeadTranslation{0.0};
 double AxialFeetTranslation{0.0};
 double LateralTranslation{0.0};
