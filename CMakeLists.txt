@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 
 project(PLY_creator)
 
-include_directories(NeuroKinematics NeuroKinematics/)
+include_directories(NeuroKinematics NeuroKinematics/ include/ForwardKinematics/)
 
-add_library(NeuroKinematics NeuroKinematics/NeuroKinematics.cpp)
+add_library(NeuroKinematics NeuroKinematics/NeuroKinematics.cpp include/ForwardKinematics/ForwardKinematics.cpp)
 
 find_package(VTK COMPONENTS
   vtkCommonColor
@@ -32,23 +32,17 @@ if (NOT VTK_FOUND)
   return ()
 endif()
 message (STATUS "VTK_VERSION: ${VTK_VERSION}")
-if (VTK_VERSION VERSION_LESS "8.90.0")
-  # old system
-  include(${VTK_USE_FILE})
-  add_executable(ForwardKinematics MACOSX_BUNDLE ForwardKinematics.cpp )
-  add_executable(IK_Solver MACOSX_BUNDLE IK_Solver.cpp )
-  target_link_libraries(ForwardKinematics PRIVATE ${VTK_LIBRARIES})
-  target_link_libraries(IK_Solver PRIVATE NeuroKinematics ${VTK_LIBRARIES})
 
-else ()
-  # include all components
-  add_executable(ForwardKinematics MACOSX_BUNDLE ForwardKinematics.cpp )
-  add_executable(IK_Solver MACOSX_BUNDLE IK_Solver.cpp )
-  target_link_libraries(ForwardKinematics PRIVATE ${VTK_LIBRARIES} NeuroKinematics)
-  target_link_libraries(IK_Solver PRIVATE ${VTK_LIBRARIES} NeuroKinematics)
 
-  # vtk_module_autoinit is needed
-  vtk_module_autoinit(
-    TARGETS ForwardKinematics IK_Solver
-    MODULES ${VTK_LIBRARIES})
-endif () 
+# include all components
+add_executable(ForwardKinematics MACOSX_BUNDLE main.cpp include/ForwardKinematics/ForwardKinematics.cpp)
+add_executable(IK_Solver MACOSX_BUNDLE IK_Solver.cpp )
+target_link_libraries(ForwardKinematics PRIVATE ${VTK_LIBRARIES} NeuroKinematics)
+target_link_libraries(NeuroKinematics PRIVATE ${VTK_LIBRARIES} )
+
+target_link_libraries(IK_Solver PRIVATE ${VTK_LIBRARIES} NeuroKinematics)
+# vtk_module_autoinit is needed
+vtk_module_autoinit(
+  TARGETS ForwardKinematics IK_Solver
+  MODULES ${VTK_LIBRARIES})
+
