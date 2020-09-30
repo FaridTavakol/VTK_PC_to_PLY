@@ -49,6 +49,20 @@ ForwardKinematics::ForwardKinematics(NeuroKinematics &NeuroKinematics) : Diff(71
 
 vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matrix4d registration)
 {
+  // To visualize the transferred points in the slicer
+  Eigen::Matrix4d registration_inv = registration.inverse();
+  std::cerr << registration_inv << std::endl;
+  Eigen::Vector4d transferred_point{};
+  Eigen::Vector4d point{};
+
+  transferred_point(3) = 1;
+  std::cerr << transferred_point << std::endl;
+  for (int tt = 0; tt < 3; tt++)
+  {
+    transferred_point(tt) = round(transferred_point(tt) * 10) / 10;
+  }
+  std::cerr << transferred_point << std::endl;
+
   // Object containing the 4x4 transformation matrix
   Neuro_FK_outputs FK{};
 
@@ -67,7 +81,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                               LateralTranslation, ProbeInsertion,
                                               ProbeRotation, PitchRotation, YawRotation);
       nan_ckecker(FK);
-      points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+      for (int t = 0; t < 3; t++)
+      {
+        transferred_point(t) = FK.zFrameToTreatment(t, 3);
+      }
+      transferred_point = registration_inv * point;
+      //rounding step
+      for (int t = 0; t < 3; t++)
+      {
+        transferred_point(t) = round(transferred_point(t) * 10) / 10;
+      }
+      points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
     }
   }
 
@@ -90,7 +114,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                   LateralTranslation, ProbeInsertion,
                                                   ProbeRotation, PitchRotation, YawRotation);
           nan_ckecker(FK);
-          points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = FK.zFrameToTreatment(t, 3);
+          }
+          transferred_point = registration_inv * point;
+          //rounding step
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = round(transferred_point(t) * 10) / 10;
+          }
+          points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         }
       }
       else
@@ -103,7 +137,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                   LateralTranslation, ProbeInsertion,
                                                   ProbeRotation, PitchRotation, YawRotation);
           nan_ckecker(FK);
-          points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = FK.zFrameToTreatment(t, 3);
+          }
+          transferred_point = registration_inv * point;
+          //rounding step
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = round(transferred_point(t) * 10) / 10;
+          }
+          points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         }
       }
     }
@@ -140,7 +184,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
               nan_ckecker(FK);
-              points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = FK.zFrameToTreatment(t, 3);
+              }
+              transferred_point = registration_inv * point;
+              //rounding step
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = round(transferred_point(t) * 10) / 10;
+              }
+              points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
         }
@@ -157,7 +211,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
               nan_ckecker(FK);
-              points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = FK.zFrameToTreatment(t, 3);
+              }
+              transferred_point = registration_inv * point;
+              //rounding step
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = round(transferred_point(t) * 10) / 10;
+              }
+              points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
         }
@@ -171,7 +235,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                     LateralTranslation, ProbeInsertion,
                                                     ProbeRotation, PitchRotation, YawRotation);
             nan_ckecker(FK);
-            points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = FK.zFrameToTreatment(t, 3);
+            }
+            transferred_point = registration_inv * point;
+            //rounding step
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = round(transferred_point(t) * 10) / 10;
+            }
+            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
           }
         }
       }
@@ -189,7 +263,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                     LateralTranslation, ProbeInsertion,
                                                     ProbeRotation, PitchRotation, YawRotation);
             nan_ckecker(FK);
-            points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = FK.zFrameToTreatment(t, 3);
+            }
+            transferred_point = registration_inv * point;
+            //rounding step
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = round(transferred_point(t) * 10) / 10;
+            }
+            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
           }
         }
         else if (k == 37.5) // any lvl bore side
@@ -202,7 +286,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                     LateralTranslation, ProbeInsertion,
                                                     ProbeRotation, PitchRotation, YawRotation);
             nan_ckecker(FK);
-            points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = FK.zFrameToTreatment(t, 3);
+            }
+            transferred_point = registration_inv * point;
+            //rounding step
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = round(transferred_point(t) * 10) / 10;
+            }
+            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
           }
         }
 
@@ -214,7 +308,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                   LateralTranslation, ProbeInsertion,
                                                   ProbeRotation, PitchRotation, YawRotation);
           nan_ckecker(FK);
-          points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = FK.zFrameToTreatment(t, 3);
+          }
+          transferred_point = registration_inv * point;
+          //rounding step
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = round(transferred_point(t) * 10) / 10;
+          }
+          points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         }
       }
     }
@@ -248,7 +352,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                   LateralTranslation, ProbeInsertion,
                                                   ProbeRotation, PitchRotation, YawRotation);
           nan_ckecker(FK);
-          points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = FK.zFrameToTreatment(t, 3);
+          }
+          transferred_point = registration_inv * point;
+          //rounding step
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = round(transferred_point(t) * 10) / 10;
+          }
+          points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         }
       }
       else // all lvls before highest lvl
@@ -264,7 +378,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                     LateralTranslation, ProbeInsertion,
                                                     ProbeRotation, PitchRotation, YawRotation);
             nan_ckecker(FK);
-            points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = FK.zFrameToTreatment(t, 3);
+            }
+            transferred_point = registration_inv * point;
+            //rounding step
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = round(transferred_point(t) * 10) / 10;
+            }
+            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
           }
         }
         else if (k == 37.5) // any lvl bore side
@@ -278,7 +402,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                     LateralTranslation, ProbeInsertion,
                                                     ProbeRotation, PitchRotation, YawRotation);
             nan_ckecker(FK);
-            points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = FK.zFrameToTreatment(t, 3);
+            }
+            transferred_point = registration_inv * point;
+            //rounding step
+            for (int t = 0; t < 3; t++)
+            {
+              transferred_point(t) = round(transferred_point(t) * 10) / 10;
+            }
+            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
           }
         }
         else // any lvl between face and bore side
@@ -288,7 +422,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                   LateralTranslation, ProbeInsertion,
                                                   ProbeRotation, PitchRotation, YawRotation);
           nan_ckecker(FK);
-          points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = FK.zFrameToTreatment(t, 3);
+          }
+          transferred_point = registration_inv * point;
+          //rounding step
+          for (int t = 0; t < 3; t++)
+          {
+            transferred_point(t) = round(transferred_point(t) * 10) / 10;
+          }
+          points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         }
       }
     }
@@ -335,7 +479,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                         LateralTranslation, ProbeInsertion,
                                                         ProbeRotation, PitchRotation, YawRotation);
                 nan_ckecker(FK);
-                points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+                for (int t = 0; t < 3; t++)
+                {
+                  transferred_point(t) = FK.zFrameToTreatment(t, 3);
+                }
+                transferred_point = registration_inv * point;
+                //rounding step
+                for (int t = 0; t < 3; t++)
+                {
+                  transferred_point(t) = round(transferred_point(t) * 10) / 10;
+                }
+                points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
               }
             }
             else if (k == 37.5) // towards bore and top of workspace
@@ -347,7 +501,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                         LateralTranslation, ProbeInsertion,
                                                         ProbeRotation, PitchRotation, YawRotation);
                 nan_ckecker(FK);
-                points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+                for (int t = 0; t < 3; t++)
+                {
+                  transferred_point(t) = FK.zFrameToTreatment(t, 3);
+                }
+                transferred_point = registration_inv * point;
+                //rounding step
+                for (int t = 0; t < 3; t++)
+                {
+                  transferred_point(t) = round(transferred_point(t) * 10) / 10;
+                }
+                points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
               }
             }
           }
@@ -365,7 +529,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
               nan_ckecker(FK);
-              points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = FK.zFrameToTreatment(t, 3);
+              }
+              transferred_point = registration_inv * point;
+              //rounding step
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = round(transferred_point(t) * 10) / 10;
+              }
+              points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
           else if (k == 37.5 && abs(j) == Diff - 1) // towards bore and top of workspace
@@ -378,7 +552,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
               nan_ckecker(FK);
-              points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = FK.zFrameToTreatment(t, 3);
+              }
+              transferred_point = registration_inv * point;
+              //rounding step
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = round(transferred_point(t) * 10) / 10;
+              }
+              points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
 
@@ -392,7 +576,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
               nan_ckecker(FK);
-              points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = FK.zFrameToTreatment(t, 3);
+              }
+              transferred_point = registration_inv * point;
+              //rounding step
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = round(transferred_point(t) * 10) / 10;
+              }
+              points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
           else if (k == 37.5 && abs(j) != Diff - 1) // towards bore from bottom to a point before max height
@@ -405,7 +599,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
               nan_ckecker(FK);
-              points->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = FK.zFrameToTreatment(t, 3);
+              }
+              transferred_point = registration_inv * point;
+              //rounding step
+              for (int t = 0; t < 3; t++)
+              {
+                transferred_point(t) = round(transferred_point(t) * 10) / 10;
+              }
+              points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
         }

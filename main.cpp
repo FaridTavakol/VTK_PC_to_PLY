@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     ForwardKinematics ForwardKinematics_(NeuroKinematics_);
     // General workspace computation
     // 4x4 Registration matrix
+    // just a test case, use X= -53, Y= -119, Z= -121
     Eigen::Matrix4d registration;
     registration << 1, 0, 0, 0,
         0, 1, 0, 0,

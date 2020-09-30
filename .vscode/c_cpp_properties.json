@@ -1,21 +1,22 @@
 {
-  "configurations": [
-    {
-      "name": "Linux",
-      "includePath": [
-        "${workspaceFolder}/**",
-        "/usr/include/vtk-6.3",
-        "/usr/local/include/vtk-9.0",
-        "/home/aimlab/Documents/NRI_Project/VTK/VTK-build/Remote",
-        "/home/aimlab/Documents/NRI_Project/VTK/vtk/Remote/Powercrust",
-        "/home/aimlab/Documents/NRI_Project/VTK/vtk/Remote/PoissonReconstruction"
-      ],
-      "defines": [],
-      "compilerPath": "/usr/bin/clang",
-      "cStandard": "c11",
-      "cppStandard": "c++14",
-      "intelliSenseMode": "clang-x64"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/vtk-6.3",
+                "/usr/local/include/vtk-9.0",
+                "/home/aimlab/Documents/NRI_Project/VTK/VTK-build/Remote",
+                "/home/aimlab/Documents/NRI_Project/VTK/vtk/Remote/Powercrust",
+                "/home/aimlab/Documents/NRI_Project/VTK/vtk/Remote/PoissonReconstruction"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
 }
