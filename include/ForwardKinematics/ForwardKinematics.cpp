@@ -20,20 +20,42 @@ using std::ofstream;
 // Creating an object called Forward for FK
 // In the neuroRobot.cpp the specs for the  probe are: 0,0,5,41
 
-ForwardKinematics::ForwardKinematics(NeuroKinematics &NeuroKinematics) : Diff(71), pi(3.141)
+Eigen::Vector4d ForwardKinematics::get_Transform(Eigen::Matrix4d registration_inv, Neuro_FK_outputs FK)
+{
+  //Vector that stores the End effector's position defined in the robot's Z-frame
+  Eigen::Vector4d point(0.0, 0.0, 0.0, 1.0);
+  for (int t = 0; t < 3; t++)
+  {
+    point(t) = FK.zFrameToTreatment(t, 3);
+  }
+
+  // Vector that stores the transferred points defined W.R.T the imager's frame
+  Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+
+  //Finding the corresponding point W.R.T the imager's frame
+  transferred_point = registration_inv * point;
+
+  //rounding step (to the tenth)
+  for (int t = 0; t < 3; t++)
+  {
+    transferred_point(t) = round(transferred_point(t) * 10) / 10;
+  }
+  return transferred_point;
+}
+ForwardKinematics::ForwardKinematics(NeuroKinematics &NeuroKinematics) : Diff(68), pi(3.141)
 {
   //counters
-  i = 0;
-  j = 0;
-  k = 0;
-  l = 0; //counter initialization
+  i = 0.0;
+  j = 0.0;
+  k = 0.0;
+  l = 0.0; //counter initialization
   // Min allowed seperation 75mm
   // Max allowed seperatio1f46mm
   Ry = 0.0;                 // Initializing the PitchRotation counter
   RyF_max = -37 * pi / 180; // in paper is 37.2
-  RyB_max = +30 * pi / 180; // in paper is  30.6
+  RyB_max = +26 * pi / 180; // in paper is  30.6
   Rx = 0.0;                 // Initializing the YawRotation counter
-  Rx_max = -90 * pi / 180;  // Max YawRotation
+  Rx_max = -88 * pi / 180;  // Max YawRotation
 
   // Robot axis
   AxialHeadTranslation = 0.0;
@@ -49,106 +71,71 @@ ForwardKinematics::ForwardKinematics(NeuroKinematics &NeuroKinematics) : Diff(71
 
 vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matrix4d registration)
 {
-  // To visualize the transferred points in the slicer
+  // To visualize the transferred points in the slicer without using the Transform Module
   Eigen::Matrix4d registration_inv = registration.inverse();
-  std::cerr << registration_inv << std::endl;
-  Eigen::Vector4d transferred_point{};
-  Eigen::Vector4d point{};
+  std::cerr << "Inverse of the registration matrix is: " << registration_inv << std::endl;
 
-  transferred_point(3) = 1;
-  std::cerr << transferred_point << std::endl;
-  for (int tt = 0; tt < 3; tt++)
-  {
-    transferred_point(tt) = round(transferred_point(tt) * 10) / 10;
-  }
-  std::cerr << transferred_point << std::endl;
+  // Vector to store points before transformation
+  Eigen::Vector4d point(0.0, 0.0, 0.0, 0.0);
 
   // Object containing the 4x4 transformation matrix
   Neuro_FK_outputs FK{};
 
   // Create points
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-  //----------------------------------FK computation --------------------------------------------------------
+  /*============================================================================================================
+     =============================================FK computation============================================
+      ==================================================================================================*/
   // Loop for visualizing the top
-  for (i = 0, j = -71; i < 157; i += 15.7, j += 15.7) // 201 to 157 it should be 201 based on the paper
+  for (i = 0.0, j = 68.0; i > -146.0; i -= 14.5, j -= 14.5) // initial separation 143, min separation 75 => 143-75 = 68 mm
   {
-    AxialFeetTranslation = i;
-    AxialHeadTranslation = j;
-    for (k = 0; k <= 37.5; k += 7.5)
+    AxialHeadTranslation = i;
+    AxialFeetTranslation = j;
+    for (k = 0.0; k <= -49.0; k -= 7.0) // max lateral movement 0.0 ~ -49.47 (appx = -49)
     {
       LateralTranslation = k;
       FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                               LateralTranslation, ProbeInsertion,
                                               ProbeRotation, PitchRotation, YawRotation);
-      nan_ckecker(FK);
-      for (int t = 0; t < 3; t++)
-      {
-        transferred_point(t) = FK.zFrameToTreatment(t, 3);
-      }
-      transferred_point = registration_inv * point;
-      //rounding step
-      for (int t = 0; t < 3; t++)
-      {
-        transferred_point(t) = round(transferred_point(t) * 10) / 10;
-      }
+      nan_checker(FK);
+      Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+      transferred_point = get_Transform(registration_inv, FK);
       points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
     }
   }
 
   // loop for visualizing the bottom
-  for (i = 0, j = 0; i < 87; i += 8.7, j += 8.7) //75
+  for (i = 0, j = -3; i > -87; i -= 8.7, j -= 8.7) //75
   {
-    AxialFeetTranslation = i;
-    AxialHeadTranslation = j;
-    for (k = 0; k <= 37.5; k += 7.5)
+    AxialHeadTranslation = i;
+    AxialFeetTranslation = j;
+    for (k = 0.0; k <= -49; k -= 7.0)
     {
       LateralTranslation = k;
-      if (k == 37.5)
+      if (k == -49.0)
       {
-        for (Ry = 0; Ry <= 30; Ry += 5)
-        {
-          YawRotation = Rx_max;
-          PitchRotation = Ry * pi / 180;
-          ;
-          FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                  LateralTranslation, ProbeInsertion,
-                                                  ProbeRotation, PitchRotation, YawRotation);
-          nan_ckecker(FK);
-          for (int t = 0; t < 3; t++)
-          {
-            transferred_point(t) = FK.zFrameToTreatment(t, 3);
-          }
-          transferred_point = registration_inv * point;
-          //rounding step
-          for (int t = 0; t < 3; t++)
-          {
-            transferred_point(t) = round(transferred_point(t) * 10) / 10;
-          }
-          points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-        }
+
+        YawRotation = Rx_max;
+        PitchRotation = RyF_max;
+        FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                                LateralTranslation, ProbeInsertion,
+                                                ProbeRotation, PitchRotation, YawRotation);
+        nan_checker(FK);
+        Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+        transferred_point = get_Transform(registration_inv, FK);
+        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
       }
       else
       {
-        for (Ry = 0; Ry >= -37; Ry -= 3.7)
-        {
-          YawRotation = Rx_max;
-          PitchRotation = Ry * pi / 180;
-          FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                  LateralTranslation, ProbeInsertion,
-                                                  ProbeRotation, PitchRotation, YawRotation);
-          nan_ckecker(FK);
-          for (int t = 0; t < 3; t++)
-          {
-            transferred_point(t) = FK.zFrameToTreatment(t, 3);
-          }
-          transferred_point = registration_inv * point;
-          //rounding step
-          for (int t = 0; t < 3; t++)
-          {
-            transferred_point(t) = round(transferred_point(t) * 10) / 10;
-          }
-          points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-        }
+        YawRotation = Rx_max;
+        PitchRotation = RyB_max;
+        FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                                LateralTranslation, ProbeInsertion,
+                                                ProbeRotation, PitchRotation, YawRotation);
+        nan_checker(FK);
+        Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+        transferred_point = get_Transform(registration_inv, FK);
+        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
       }
     }
   }
@@ -158,185 +145,95 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   AxialFeetTranslation = 0;
   AxialHeadTranslation = 0;
 
-  i = 0;
-  j = -1;
-  k = 0;
-  // Loop for creating the feet face
-  for (j = -1; abs(AxialHeadTranslation - AxialFeetTranslation) < Diff; j -= 5)
+  // Loop for creating the head face
+  for (j = 0; AxialFeetTranslation <= Diff; j += 4)
   {
-    AxialHeadTranslation = j;
+    if (j == 0)
+    {
+      AxialFeetTranslation = -2;
+    }
+    else
+    {
+      AxialFeetTranslation = j;
+    }
 
-    for (k = 0; k <= 37.5; k += 7.5)
+    for (k = 0.0; k <= -49.0; k -= 7.0)
     {
       LateralTranslation = k;
-      // only for the first lvl
-      if (j == -1) //lvl one    && -37.5
+
+      if (j == 68) // Top lvl
       {
-        if (k == 0) // lvl one face side
+        for (l = 0; l <= Rx_max; l -= 8.8)
         {
-          for (i = 0; i >= -90; i -= 9) // lvl one face side Yaw lowering
-          {
-            YawRotation = i * pi / 180;
-            for (l = 0; l >= -37.5; l -= 7.5) // lvl one face side yaw lowered pitch lowering
-            {
-              PitchRotation = l * pi / 180;
-              FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                      LateralTranslation, ProbeInsertion,
-                                                      ProbeRotation, PitchRotation, YawRotation);
-              nan_ckecker(FK);
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = FK.zFrameToTreatment(t, 3);
-              }
-              transferred_point = registration_inv * point;
-              //rounding step
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = round(transferred_point(t) * 10) / 10;
-              }
-              points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-            }
-          }
-        }
-
-        else if (k == 37.5) // lvl one bore side
-        {
-          for (i = 0; i >= -90; i -= 9) // lvl one bore side Yaw lowering
-          {
-            YawRotation = i * pi / 180;
-            for (l = 0; l <= 30; l += 6) // lvl one face side yaw lowered pitch increasing
-            {
-              PitchRotation = l * pi / 180;
-              FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                      LateralTranslation, ProbeInsertion,
-                                                      ProbeRotation, PitchRotation, YawRotation);
-              nan_ckecker(FK);
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = FK.zFrameToTreatment(t, 3);
-              }
-              transferred_point = registration_inv * point;
-              //rounding step
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = round(transferred_point(t) * 10) / 10;
-              }
-              points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-            }
-          }
-        }
-        else // lvl one When not at the begining nor at the end (face/bore)
-        {
+          YawRotation = l;
           PitchRotation = 0;
-          for (i = 0; i >= -90; i -= 9) // lvl one bore side Yaw lowering
-          {
-            YawRotation = i * pi / 180;
-            FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                    LateralTranslation, ProbeInsertion,
-                                                    ProbeRotation, PitchRotation, YawRotation);
-            nan_ckecker(FK);
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = FK.zFrameToTreatment(t, 3);
-            }
-            transferred_point = registration_inv * point;
-            //rounding step
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = round(transferred_point(t) * 10) / 10;
-            }
-            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-          }
-        }
-      }
-      //end of first lvl
-
-      else
-      {
-        if (k == 0) // any lvl face side
-        {
-          for (i = 0; i >= -37.5; i -= 7.5)
-          {
-            PitchRotation = i * pi / 180;
-            YawRotation = 0;
-            FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                    LateralTranslation, ProbeInsertion,
-                                                    ProbeRotation, PitchRotation, YawRotation);
-            nan_ckecker(FK);
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = FK.zFrameToTreatment(t, 3);
-            }
-            transferred_point = registration_inv * point;
-            //rounding step
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = round(transferred_point(t) * 10) / 10;
-            }
-            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-          }
-        }
-        else if (k == 37.5) // any lvl bore side
-        {
-          for (i = 0; i <= 30; i += 6)
-          {
-            PitchRotation = i * pi / 180;
-            YawRotation = 0;
-            FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                    LateralTranslation, ProbeInsertion,
-                                                    ProbeRotation, PitchRotation, YawRotation);
-            nan_ckecker(FK);
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = FK.zFrameToTreatment(t, 3);
-            }
-            transferred_point = registration_inv * point;
-            //rounding step
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = round(transferred_point(t) * 10) / 10;
-            }
-            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-          }
-        }
-
-        else // any lvl bore side in between
-        {
-          PitchRotation = 0;
-          YawRotation = 0;
           FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                   LateralTranslation, ProbeInsertion,
                                                   ProbeRotation, PitchRotation, YawRotation);
-          nan_ckecker(FK);
-          for (int t = 0; t < 3; t++)
+          nan_checker(FK);
+          Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+          transferred_point = get_Transform(registration_inv, FK);
+          points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        }
+      }
+      else // Any other lvl from bottom to just a lvl before the top
+      {
+        if (k == 0) // Creating corner bore side
+        {
+          YawRotation = Rx_max;
+          for (l = 0; l <= RyB_max; l += 5.2) // lvl one bore side yaw lowered pitch lowering
           {
-            transferred_point(t) = FK.zFrameToTreatment(t, 3);
+            PitchRotation = l * pi / 180;
+            FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                                    LateralTranslation, ProbeInsertion,
+                                                    ProbeRotation, PitchRotation, YawRotation);
+            nan_checker(FK);
+            Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+            transferred_point = get_Transform(registration_inv, FK);
+            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
           }
-          transferred_point = registration_inv * point;
-          //rounding step
-          for (int t = 0; t < 3; t++)
+        }
+
+        else if (k == -49.0) // Creating corner face side
+        {
+          YawRotation = Rx_max;
+          for (l = 0; l >= RyF_max; l -= 7.4) // lvl one face side yaw lowered pitch increasing
           {
-            transferred_point(t) = round(transferred_point(t) * 10) / 10;
+            PitchRotation = l * pi / 180;
+            FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                                    LateralTranslation, ProbeInsertion,
+                                                    ProbeRotation, PitchRotation, YawRotation);
+            nan_checker(FK);
+            Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+            transferred_point = get_Transform(registration_inv, FK);
+            points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
           }
+        }
+
+        else // Space between two corners
+        {
+          YawRotation = Rx_max;
+          PitchRotation = 0;
+          FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                                  LateralTranslation, ProbeInsertion,
+                                                  ProbeRotation, PitchRotation, YawRotation);
+          nan_checker(FK);
+          Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+          transferred_point = get_Transform(registration_inv, FK);
           points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         }
       }
     }
   }
 
-  // Loop for creating the Head face
-  // j = 200 i = 200 i++ 71 = 271 ;
+  // Loop for creating the feet face
   PitchRotation = 0;
   YawRotation = 0;
+  AxialFeetTranslation = -89; // TILL HERE!
 
-  AxialHeadTranslation = 86;
-  AxialFeetTranslation = 86;
-  i = 86;
-  j = 86;
-  k = 0;
-  for (i = 87; abs(AxialHeadTranslation - AxialFeetTranslation) <= Diff; ++i)
+  for (i = -86; AxialHeadTranslation <= -157; --i)
   {
-    AxialFeetTranslation = i;
+    AxialHeadTranslation = i;
 
     for (k = 0; k <= 37.5; k += 3.75)
     {
@@ -351,17 +248,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
           FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                   LateralTranslation, ProbeInsertion,
                                                   ProbeRotation, PitchRotation, YawRotation);
-          nan_ckecker(FK);
-          for (int t = 0; t < 3; t++)
-          {
-            transferred_point(t) = FK.zFrameToTreatment(t, 3);
-          }
-          transferred_point = registration_inv * point;
-          //rounding step
-          for (int t = 0; t < 3; t++)
-          {
-            transferred_point(t) = round(transferred_point(t) * 10) / 10;
-          }
+          nan_checker(FK);
+          Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+          transferred_point = get_Transform(registration_inv, FK);
           points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         }
       }
@@ -377,17 +266,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
             FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                     LateralTranslation, ProbeInsertion,
                                                     ProbeRotation, PitchRotation, YawRotation);
-            nan_ckecker(FK);
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = FK.zFrameToTreatment(t, 3);
-            }
-            transferred_point = registration_inv * point;
-            //rounding step
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = round(transferred_point(t) * 10) / 10;
-            }
+            nan_checker(FK);
+            Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+            transferred_point = get_Transform(registration_inv, FK);
             points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
           }
         }
@@ -401,17 +282,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
             FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                     LateralTranslation, ProbeInsertion,
                                                     ProbeRotation, PitchRotation, YawRotation);
-            nan_ckecker(FK);
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = FK.zFrameToTreatment(t, 3);
-            }
-            transferred_point = registration_inv * point;
-            //rounding step
-            for (int t = 0; t < 3; t++)
-            {
-              transferred_point(t) = round(transferred_point(t) * 10) / 10;
-            }
+            nan_checker(FK);
+            Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+            transferred_point = get_Transform(registration_inv, FK);
             points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
           }
         }
@@ -421,17 +294,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
           FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                   LateralTranslation, ProbeInsertion,
                                                   ProbeRotation, PitchRotation, YawRotation);
-          nan_ckecker(FK);
-          for (int t = 0; t < 3; t++)
-          {
-            transferred_point(t) = FK.zFrameToTreatment(t, 3);
-          }
-          transferred_point = registration_inv * point;
-          //rounding step
-          for (int t = 0; t < 3; t++)
-          {
-            transferred_point(t) = round(transferred_point(t) * 10) / 10;
-          }
+          nan_checker(FK);
+          Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+          transferred_point = get_Transform(registration_inv, FK);
           points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         }
       }
@@ -478,17 +343,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                         LateralTranslation, ProbeInsertion,
                                                         ProbeRotation, PitchRotation, YawRotation);
-                nan_ckecker(FK);
-                for (int t = 0; t < 3; t++)
-                {
-                  transferred_point(t) = FK.zFrameToTreatment(t, 3);
-                }
-                transferred_point = registration_inv * point;
-                //rounding step
-                for (int t = 0; t < 3; t++)
-                {
-                  transferred_point(t) = round(transferred_point(t) * 10) / 10;
-                }
+                nan_checker(FK);
+                Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+                transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
               }
             }
@@ -500,17 +357,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                         LateralTranslation, ProbeInsertion,
                                                         ProbeRotation, PitchRotation, YawRotation);
-                nan_ckecker(FK);
-                for (int t = 0; t < 3; t++)
-                {
-                  transferred_point(t) = FK.zFrameToTreatment(t, 3);
-                }
-                transferred_point = registration_inv * point;
-                //rounding step
-                for (int t = 0; t < 3; t++)
-                {
-                  transferred_point(t) = round(transferred_point(t) * 10) / 10;
-                }
+                nan_checker(FK);
+                Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+                transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
               }
             }
@@ -528,17 +377,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
-              nan_ckecker(FK);
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = FK.zFrameToTreatment(t, 3);
-              }
-              transferred_point = registration_inv * point;
-              //rounding step
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = round(transferred_point(t) * 10) / 10;
-              }
+              nan_checker(FK);
+              Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+              transferred_point = get_Transform(registration_inv, FK);
               points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
@@ -551,17 +392,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
-              nan_ckecker(FK);
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = FK.zFrameToTreatment(t, 3);
-              }
-              transferred_point = registration_inv * point;
-              //rounding step
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = round(transferred_point(t) * 10) / 10;
-              }
+              nan_checker(FK);
+              Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+              transferred_point = get_Transform(registration_inv, FK);
               points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
@@ -575,17 +408,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
-              nan_ckecker(FK);
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = FK.zFrameToTreatment(t, 3);
-              }
-              transferred_point = registration_inv * point;
-              //rounding step
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = round(transferred_point(t) * 10) / 10;
-              }
+              nan_checker(FK);
+              Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+              transferred_point = get_Transform(registration_inv, FK);
               points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
@@ -598,17 +423,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                       LateralTranslation, ProbeInsertion,
                                                       ProbeRotation, PitchRotation, YawRotation);
-              nan_ckecker(FK);
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = FK.zFrameToTreatment(t, 3);
-              }
-              transferred_point = registration_inv * point;
-              //rounding step
-              for (int t = 0; t < 3; t++)
-              {
-                transferred_point(t) = round(transferred_point(t) * 10) / 10;
-              }
+              nan_checker(FK);
+              Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+              transferred_point = get_Transform(registration_inv, FK);
               points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
             }
           }
@@ -759,7 +576,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_Sub_Workspace(Eigen::Matrix4d 
 }
 
 // Method to search for NaN values in the FK output
-void ForwardKinematics::nan_ckecker(Neuro_FK_outputs FK)
+void ForwardKinematics::nan_checker(Neuro_FK_outputs FK)
 {
   int nan_checker_row{};
   int nan_checker_col{};
