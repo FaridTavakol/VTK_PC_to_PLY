@@ -10,8 +10,8 @@ public:
     ForwardKinematics(NeuroKinematics &NeuroKinematics);
 
     //members
-    double i, j, k, l; //counter initialization
-                       // Min allowed seperation 75mm
+    double i, j, k, l, ii; //counter initialization
+                           // Min allowed seperation 75mm
     // Max allowed seperation  146mm
     const double Diff; // Is the max allowed movement while one block is stationary 146-75 = 71 mm
     const double pi;
@@ -20,6 +20,9 @@ public:
     double RyB_max; // in paper is  30.6
     double Rx;      // Initializing the YawRotation counter
     double Rx_max;  // Max YawRotation
+    double RyF_max_degree;
+    double RyB_max_degree;
+    double Rx_max_degree;
     // Robot axis
     double AxialHeadTranslation;
     double AxialFeetTranslation;
