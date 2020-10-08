@@ -23,6 +23,7 @@ public:
     double RyF_max_degree;
     double RyB_max_degree;
     double Rx_max_degree;
+    int counter; // counter for NaN checker
     // Robot axis
     double AxialHeadTranslation;
     double AxialFeetTranslation;
@@ -34,8 +35,8 @@ public:
     NeuroKinematics NeuroKinematics_;
 
     //methods
-    vtkSmartPointer<vtkPoints> get_General_Workspace(Eigen::Matrix4d registration);
+    vtkSmartPointer<vtkPoints> get_General_Workspace(Eigen::Matrix4d registration, vtkSmartPointer<vtkPoints> points);
     vtkSmartPointer<vtkPoints> get_Sub_Workspace(Eigen::Matrix4d registration, Eigen::Vector4d entryPointScanner);
-    void nan_checker(Neuro_FK_outputs FK);
+    void nan_checker(Neuro_FK_outputs FK, int &counter);
     Eigen::Vector4d get_Transform(Eigen::Matrix4d registration_inv, Neuro_FK_outputs FK);
 };

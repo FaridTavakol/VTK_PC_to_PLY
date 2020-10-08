@@ -42,7 +42,9 @@ int main(int argc, char *argv[])
         0, 0, 0, 1;
 
     vtkSmartPointer<vtkPoints> General_Workspace_PC = vtkSmartPointer<vtkPoints>::New();
-    General_Workspace_PC = ForwardKinematics_.get_General_Workspace(registration);
+    std::cout << "Im here\n";
+    General_Workspace_PC = ForwardKinematics_.get_General_Workspace(registration, General_Workspace_PC);
+    // std::cout << "# of points: " << General_Workspace_PC->GetNumberOfPoints();
     // vtkSmartPointer<vtkPoints> RCM_points = vtkSmartPointer<vtkPoints>::New();
     // Create a polydata object and add the points to it.
     vtkSmartPointer<vtkPolyData> polydata_General_Workspace_PC = vtkSmartPointer<vtkPolyData>::New();
