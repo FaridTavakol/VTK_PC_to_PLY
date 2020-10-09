@@ -53,6 +53,8 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
 
   // Object containing the 4x4 transformation matrix
   Neuro_FK_outputs FK{};
+  ofstream myout("test.xyz");
+
   // std::cout << "\n====================Testing======================\n";
   // Test ground
   // Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
@@ -64,6 +66,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   //
   // Create points
   // vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+
   /*============================================================================================================
      =============================================FK computation============================================
       ==================================================================================================*/
@@ -83,6 +86,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
       Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
       transferred_point = get_Transform(registration_inv, FK);
       points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+      myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
     }
   }
 
@@ -95,21 +99,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
     for (k = 0.0; k >= -49; k -= 7.0)
     {
       LateralTranslation = k;
-      if (k == -49.0)
+      if (k >= -28)
       {
 
-        YawRotation = Rx_max;
-        PitchRotation = RyF_max;
-        FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                LateralTranslation, ProbeInsertion,
-                                                ProbeRotation, PitchRotation, YawRotation);
-        nan_checker(FK, counter);
-        Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-        transferred_point = get_Transform(registration_inv, FK);
-        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-      }
-      else
-      {
         YawRotation = Rx_max;
         PitchRotation = RyB_max;
         FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
@@ -119,6 +111,20 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
         Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
         transferred_point = get_Transform(registration_inv, FK);
         points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
+      }
+      if (k <= -7)
+      {
+        YawRotation = Rx_max;
+        PitchRotation = RyF_max;
+        FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                                LateralTranslation, ProbeInsertion,
+                                                ProbeRotation, PitchRotation, YawRotation);
+        nan_checker(FK, counter);
+        Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+        transferred_point = get_Transform(registration_inv, FK);
+        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
     }
   }
@@ -132,7 +138,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   ++counter;
   for (j = 7.1; j <= 71; j += 7.1)
   {
-    AxialFeetTranslation += j;
+    AxialFeetTranslation += 7.1;
 
     for (k = 0.0; k >= -49.0; k -= 7.0)
     {
@@ -155,6 +161,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
               transferred_point = get_Transform(registration_inv, FK);
               points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+              myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
             }
           }
         }
@@ -173,6 +180,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
               transferred_point = get_Transform(registration_inv, FK);
               points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+              myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
             }
           }
         }
@@ -189,6 +197,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
             Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
             transferred_point = get_Transform(registration_inv, FK);
             points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+            myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
           }
         }
       }
@@ -207,6 +216,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
             Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
             transferred_point = get_Transform(registration_inv, FK);
             points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+            myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
           }
         }
 
@@ -223,6 +233,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
             Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
             transferred_point = get_Transform(registration_inv, FK);
             points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+            myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
           }
         }
 
@@ -237,6 +248,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
           Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
           transferred_point = get_Transform(registration_inv, FK);
           points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+          myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
         }
       }
     }
@@ -253,12 +265,12 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   {
     LateralTranslation = k;
     // if on the bore side
-    if (k >= -21)
+    if (k >= -28)
     {
       PitchRotation = RyB_max;
       for (i = 0; i >= Rx_max_degree; i -= 8.8)
       {
-        YawRotation = i;
+        YawRotation = i * pi / 180;
         FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                 LateralTranslation, ProbeInsertion,
                                                 ProbeRotation, PitchRotation, YawRotation);
@@ -266,14 +278,15 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
         Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
         transferred_point = get_Transform(registration_inv, FK);
         points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
     }
-    if (k <= -14)
+    if (k <= -7)
     {
       PitchRotation = RyF_max;
       for (i = 0; i >= Rx_max_degree; i -= 8.8)
       {
-        YawRotation = i;
+        YawRotation = i * pi / 180;
         FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                 LateralTranslation, ProbeInsertion,
                                                 ProbeRotation, PitchRotation, YawRotation);
@@ -281,6 +294,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
         Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
         transferred_point = get_Transform(registration_inv, FK);
         points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
     }
   }
@@ -291,13 +305,13 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   // Feet face for levels other than the first
   for (j = -7.1; j >= -71; j -= 7.1)
   {
-    AxialHeadTranslation += j;
+    AxialHeadTranslation -= 7.1;
 
     for (k = 0.0; k >= -49.0; k -= 7.0)
     {
       LateralTranslation = k;
       // if on the bore side
-      if (k >= -21)
+      if (k >= -28)
       {
         PitchRotation = RyB_max;
         YawRotation = 0;
@@ -308,8 +322,9 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
         Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
         transferred_point = get_Transform(registration_inv, FK);
         points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
-      if (k <= -14)
+      if (k <= -7)
       {
         PitchRotation = RyF_max;
         YawRotation = 0;
@@ -320,6 +335,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
         Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
         transferred_point = get_Transform(registration_inv, FK);
         points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
     }
   }
@@ -342,7 +358,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
 
     AxialFeetTranslation_old = AxialFeetTranslation;
     AxialHeadTranslation_old = AxialHeadTranslation;
-    for (ii = 0; ii <= min_travel; ii += (min_travel / 10)) // loop to move the base from Head to feet based on the allowable max movement range (min_travel)
+    for (ii = 0; ii >= min_travel; ii += (min_travel / 10)) // loop to move the base from Head to feet based on the allowable max movement range (min_travel)
     {
       AxialHeadTranslation += ii;
       AxialFeetTranslation += ii;
@@ -372,6 +388,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                 transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
               }
             }
             // 2) End of the track
@@ -385,6 +402,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
               transferred_point = get_Transform(registration_inv, FK);
               points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+              myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
             }
             // 3) In between beginning and end
             else
@@ -399,6 +417,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                 transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
               }
             }
           }
@@ -422,6 +441,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                   Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                   transferred_point = get_Transform(registration_inv, FK);
                   points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                  myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
                 }
               }
             }
@@ -445,6 +465,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                 transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
               }
             }
 
@@ -461,6 +482,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                 transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
               }
             }
           }
@@ -487,6 +509,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                 transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
               }
             }
             // 2) End of the track
@@ -500,6 +523,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
               transferred_point = get_Transform(registration_inv, FK);
               points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+              myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
             }
             // 3) In between beginning and end
             else
@@ -514,6 +538,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                 transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
               }
             }
           }
@@ -537,6 +562,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                   Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                   transferred_point = get_Transform(registration_inv, FK);
                   points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                  myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
                 }
               }
             }
@@ -560,6 +586,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                 transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
               }
             }
 
@@ -576,7 +603,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
                 Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
                 transferred_point = get_Transform(registration_inv, FK);
                 points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-                std::cerr << "I've been here!\n";
+                myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
               }
             }
           }
@@ -592,6 +619,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
     min_travel = -86;
   }
   std::cout << "# of points: " << points->GetNumberOfPoints();
+  myout.close();
   return points;
 }
 
