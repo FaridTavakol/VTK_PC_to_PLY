@@ -53,20 +53,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
 
   // Object containing the 4x4 transformation matrix
   Neuro_FK_outputs FK{};
-  ofstream myout("test.xyz");
-
-  // std::cout << "\n====================Testing======================\n";
-  // Test ground
-  // Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-  // FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-  //                                         LateralTranslation, ProbeInsertion,
-  //                                         ProbeRotation, PitchRotation, YawRotation);
-  // transferred_point = get_Transform(registration_inv, FK);
-  // std::cout << transferred_point << std::endl;
-  //
-  // Create points
-  // vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-
+  ofstream myout("General_workspace.xyz");
   /*============================================================================================================
      =============================================FK computation============================================
       ==================================================================================================*/
@@ -184,12 +171,12 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
             }
           }
         }
-        else // between the bore and the face
+        else //if (k < 0.0 && k > -49.0) // between the bore and the face
         {
-          for (l = 0; l >= Rx_max_degree; l -= 8.8)
+          for (l = 0; l >= Rx_max_degree; l += Rx_max_degree / 10)
           {
-            YawRotation = l;
             PitchRotation = 0;
+            YawRotation = l * pi / 180;
             FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                     LateralTranslation, ProbeInsertion,
                                                     ProbeRotation, PitchRotation, YawRotation);
@@ -433,7 +420,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               {
                 for (i = Rx_max_degree / 10; i >= Rx_max_degree; i += Rx_max_degree / 10)
                 {
-                  YawRotation = i * pi / 180;
+                  YawRotation = 0;
                   FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                           LateralTranslation, ProbeInsertion,
                                                           ProbeRotation, PitchRotation, YawRotation);
@@ -554,7 +541,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
               {
                 for (i = Rx_max_degree / 10; i >= Rx_max_degree; i += Rx_max_degree / 10)
                 {
-                  YawRotation = i * pi / 180;
+                  YawRotation = 0;
                   FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
                                                           LateralTranslation, ProbeInsertion,
                                                           ProbeRotation, PitchRotation, YawRotation);
