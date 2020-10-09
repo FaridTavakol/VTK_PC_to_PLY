@@ -349,7 +349,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
 
     AxialFeetTranslation_old = AxialFeetTranslation;
     AxialHeadTranslation_old = AxialHeadTranslation;
-    for (ii = 0; ii >= min_travel; ii += (min_travel / 10)) // loop to move the base from Head to feet based on the allowable max movement range (min_travel)
+    for (ii = 0; ii >= min_travel; ii += (min_travel / 20)) // loop to move the base from Head to feet based on the allowable max movement range (min_travel)
     {
       AxialHeadTranslation += ii;
       AxialFeetTranslation += ii;
