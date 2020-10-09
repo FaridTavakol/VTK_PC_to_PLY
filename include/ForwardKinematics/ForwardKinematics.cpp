@@ -59,10 +59,14 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
       ==================================================================================================*/
   // Loop for visualizing the top
   ++counter;
-  for (i = 0.0, j = 68.0; i > -146.0; i -= 14.5, j -= 14.5) // initial separation 143, min separation 75 => 143-75 = 68 mm
+  AxialFeetTranslation = 68;
+  AxialHeadTranslation = 0;
+  double Top_max_travel{-146};
+  for (i = Top_max_travel / 100; i > Top_max_travel; i += Top_max_travel / 100) // initial separation 143, min separation 75 => 143-75 = 68 mm
   {
-    AxialHeadTranslation = i;
-    AxialFeetTranslation = j;
+    AxialHeadTranslation += Top_max_travel / 100;
+    AxialFeetTranslation += Top_max_travel / 100;
+    std::cout << AxialFeetTranslation << endl;
     for (k = 0.0; k >= -49.0; k -= 7.0) // max lateral movement 0.0 ~ -49.47 (appx = -49)
     {
       LateralTranslation = k;
@@ -138,7 +142,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
           for (i = 0; i <= RyB_max_degree; i += 5.2)
           {
             PitchRotation = i * pi / 180;
-            for (ii = 0; ii >= Rx_max_degree; ii -= 8.8)
+            for (ii = 0; ii >= Rx_max_degree; ii += Rx_max_degree / 10)
             {
               YawRotation = ii * pi / 180;
               FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
@@ -157,7 +161,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
           for (i = 0; i >= RyF_max_degree; i -= 7.4)
           {
             PitchRotation = i * pi / 180;
-            for (ii = 0; ii >= Rx_max_degree; ii -= 8.8)
+            for (ii = 0; ii >= Rx_max_degree; ii += Rx_max_degree / 10)
             {
               YawRotation = ii * pi / 180;
               FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
@@ -173,7 +177,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
         }
         else //if (k < 0.0 && k > -49.0) // between the bore and the face
         {
-          for (l = 0; l >= Rx_max_degree; l += Rx_max_degree / 10)
+          for (l = Rx_max_degree / 8.8; l >= Rx_max_degree; l += Rx_max_degree / 8.8)
           {
             PitchRotation = 0;
             YawRotation = l * pi / 180;
