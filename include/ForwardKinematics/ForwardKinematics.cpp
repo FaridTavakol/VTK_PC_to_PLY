@@ -415,50 +415,22 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
           // Only for the topmost level
           else if (j == 71)
           {
-            if (ii > -157 && ii < -109)
+            // In between beginning and end
+            if (ii < 0 && ii > min_travel)
             {
-              for (l = RyB_max_degree / 13; l <= RyB_max_degree; l += RyB_max_degree / 13)
+              for (l = RyB_max_degree / 27; l <= RyB_max_degree; l += RyB_max_degree / 27)
               {
                 PitchRotation = l * pi / 180;
-                // In between beginning and end
-                if (ii < 0 && ii > min_travel)
-                {
-                  for (i = Rx_max_degree / 8.8; i >= Rx_max_degree; i += Rx_max_degree / 8.8)
-                  {
-                    YawRotation = 0;
-                    FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                            LateralTranslation, ProbeInsertion,
-                                                            ProbeRotation, PitchRotation, YawRotation);
-                    nan_checker(FK, counter);
-                    Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-                    transferred_point = get_Transform(registration_inv, FK);
-                    points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-                    myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
-                  }
-                }
-              }
-            }
-            else
-            {
-              for (l = RyB_max_degree / 2.6; l <= RyB_max_degree; l += RyB_max_degree / 2.6)
-              {
-                PitchRotation = l * pi / 180;
-                // In between beginning and end
-                if (ii < 0 && ii > min_travel)
-                {
-                  for (i = Rx_max_degree / 10; i >= Rx_max_degree; i += Rx_max_degree / 10)
-                  {
-                    YawRotation = 0;
-                    FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                            LateralTranslation, ProbeInsertion,
-                                                            ProbeRotation, PitchRotation, YawRotation);
-                    nan_checker(FK, counter);
-                    Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-                    transferred_point = get_Transform(registration_inv, FK);
-                    points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
-                    myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
-                  }
-                }
+                YawRotation = 0;
+
+                FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
+                                                        LateralTranslation, ProbeInsertion,
+                                                        ProbeRotation, PitchRotation, YawRotation);
+                nan_checker(FK, counter);
+                Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+                transferred_point = get_Transform(registration_inv, FK);
+                points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+                myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
               }
             }
           }
