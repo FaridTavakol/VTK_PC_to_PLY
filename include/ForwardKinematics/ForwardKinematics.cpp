@@ -66,7 +66,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   {
     AxialHeadTranslation += Top_max_travel / 100;
     AxialFeetTranslation += Top_max_travel / 100;
-    for (k = 0.0; k >= -49.0; k -= 7.0) // max lateral movement 0.0 ~ -49.47 (appx = -49)
+    for (k = 0.0 - 49.0; k >= -49.0 - 49.0; k -= 7.0) // max lateral movement 0.0 ~ -49.47 (appx = -49)
     {
       LateralTranslation = k;
       FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
@@ -86,10 +86,10 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   {
     AxialHeadTranslation = i;
     AxialFeetTranslation = j;
-    for (k = 0.0; k >= -49; k -= 7.0)
+    for (k = 0.0 - 49.0; k >= -49 - 49.0; k -= 7.0)
     {
       LateralTranslation = k;
-      if (k >= -28)
+      if (k >= -28 - 49.0)
       {
 
         YawRotation = Rx_max;
@@ -103,7 +103,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
         points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
-      if (k <= -7)
+      if (k <= -7 - 49.0)
       {
         YawRotation = Rx_max;
         PitchRotation = RyF_max;
@@ -130,13 +130,13 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   {
     AxialFeetTranslation += 7.1;
 
-    for (k = 0.0; k >= -49.0; k -= 7.0)
+    for (k = 0.0 - 49.0; k >= -49.0 - 49.0; k -= 7.0)
     {
       LateralTranslation = k;
 
       if (j == 71) // Top level
       {
-        if (k == 0)
+        if (k == 0 - 49.0)
         {
           for (i = 0; i <= RyB_max_degree; i += 5.2)
           {
@@ -155,7 +155,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
             }
           }
         }
-        else if (k == -49.0)
+        else if (k == -49.0 - 49.0)
         {
           for (i = 0; i >= RyF_max_degree; i -= 7.4)
           {
@@ -193,7 +193,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
       }
       else // Any other lvl from bottom to just a lvl before the top
       {
-        if (k == 0) // Creating corner bore side
+        if (k == 0 - 49.0) // Creating corner bore side
         {
           YawRotation = Rx_max;
           for (l = 0; l <= RyB_max_degree; l += 5.2) // lvl one bore side yaw lowered pitch lowering
@@ -210,7 +210,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
           }
         }
 
-        else if (k == -49.0) // Creating corner face side
+        else if (k == -49.0 - 49.0) // Creating corner face side
         {
           YawRotation = Rx_max;
           for (l = 0; l >= RyF_max_degree; l -= 7.4) // lvl one face side yaw lowered pitch increasing
@@ -251,11 +251,11 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   // Loop for creating the feet face
   ++counter;
   //only for the bottom level at Axial Head of -86 and Axial Feet of -89
-  for (k = 0.0; k >= -49.0; k -= 7.0)
+  for (k = 0.0 - 49.0; k >= -49.0 - 49.0; k -= 7.0)
   {
     LateralTranslation = k;
     // if on the bore side
-    if (k >= -28)
+    if (k >= -28 - 49.0)
     {
       PitchRotation = RyB_max;
       for (i = 0; i >= Rx_max_degree; i -= 8.8)
@@ -271,7 +271,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
         myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
     }
-    if (k <= -7)
+    if (k <= -7 - 49.0)
     {
       PitchRotation = RyF_max;
       for (i = 0; i >= Rx_max_degree; i -= 8.8)
@@ -297,11 +297,11 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   {
     AxialHeadTranslation -= 7.1;
 
-    for (k = 0.0; k >= -49.0; k -= 7.0)
+    for (k = 0.0 - 49.0; k >= -49.0 - 49.0; k -= 7.0)
     {
       LateralTranslation = k;
       // if on the bore side
-      if (k >= -28)
+      if (k >= -28 - 49.0)
       {
         PitchRotation = RyB_max;
         YawRotation = 0;
@@ -314,7 +314,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
         points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
-      if (k <= -7)
+      if (k <= -7 - 49.0)
       {
         PitchRotation = RyF_max;
         YawRotation = 0;
@@ -353,11 +353,11 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
       AxialHeadTranslation += ii;
       AxialFeetTranslation += ii;
 
-      for (k = 0.0; k >= -49.0; k -= 49.0)
+      for (k = 0.0 - 49.0; k >= -49.0 - 49.0; k -= 49.0)
       {
         LateralTranslation = k;
         // For the side towards bore
-        if (k == 0.0)
+        if (k == 0.0 - 49.0)
         {
           // Conditions based on the position of the base
           // Only for the first level
@@ -418,7 +418,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
             // In between beginning and end
             if (ii < 0 && ii > min_travel)
             {
-              for (l = RyB_max_degree / 27; l <= RyB_max_degree; l += RyB_max_degree / 27)
+              for (l = RyB_max_degree / 5; l <= RyB_max_degree; l += RyB_max_degree / 5)
               {
                 PitchRotation = l * pi / 180;
                 YawRotation = 0;
@@ -476,7 +476,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
           }
         }
         // For the side towards the patient
-        else if (k == -49.0)
+        else if (k == -49.0 - 49.0)
         {
           // Conditions based on the position of the base
           // Only for the first level
@@ -487,7 +487,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
             // 1) Beginning of the track
             if (ii == 0)
             {
-              for (i = 0; i > Rx_max_degree; i += Rx_max_degree / 10)
+              for (i = 0; i > Rx_max_degree; i += Rx_max_degree / 11)
               {
                 YawRotation = i * pi / 180;
                 FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
