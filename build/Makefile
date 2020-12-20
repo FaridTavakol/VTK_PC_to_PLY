@@ -169,33 +169,6 @@ NeuroKinematics/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/build
 .PHONY : NeuroKinematics/fast
 
-ForwardKinematics.o: ForwardKinematics.cpp.o
-
-.PHONY : ForwardKinematics.o
-
-# target to build an object file
-ForwardKinematics.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.o
-.PHONY : ForwardKinematics.cpp.o
-
-ForwardKinematics.i: ForwardKinematics.cpp.i
-
-.PHONY : ForwardKinematics.i
-
-# target to preprocess a source file
-ForwardKinematics.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.i
-.PHONY : ForwardKinematics.cpp.i
-
-ForwardKinematics.s: ForwardKinematics.cpp.s
-
-.PHONY : ForwardKinematics.s
-
-# target to generate assembly for a file
-ForwardKinematics.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.s
-.PHONY : ForwardKinematics.cpp.s
-
 IK_Solver.o: IK_Solver.cpp.o
 
 .PHONY : IK_Solver.o
@@ -250,6 +223,63 @@ NeuroKinematics/NeuroKinematics.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.s
 .PHONY : NeuroKinematics/NeuroKinematics.cpp.s
 
+include/ForwardKinematics/ForwardKinematics.o: include/ForwardKinematics/ForwardKinematics.cpp.o
+
+.PHONY : include/ForwardKinematics/ForwardKinematics.o
+
+# target to build an object file
+include/ForwardKinematics/ForwardKinematics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o
+.PHONY : include/ForwardKinematics/ForwardKinematics.cpp.o
+
+include/ForwardKinematics/ForwardKinematics.i: include/ForwardKinematics/ForwardKinematics.cpp.i
+
+.PHONY : include/ForwardKinematics/ForwardKinematics.i
+
+# target to preprocess a source file
+include/ForwardKinematics/ForwardKinematics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.i
+.PHONY : include/ForwardKinematics/ForwardKinematics.cpp.i
+
+include/ForwardKinematics/ForwardKinematics.s: include/ForwardKinematics/ForwardKinematics.cpp.s
+
+.PHONY : include/ForwardKinematics/ForwardKinematics.s
+
+# target to generate assembly for a file
+include/ForwardKinematics/ForwardKinematics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.s
+.PHONY : include/ForwardKinematics/ForwardKinematics.cpp.s
+
+main.o: main.cpp.o
+
+.PHONY : main.o
+
+# target to build an object file
+main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+
+.PHONY : main.i
+
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+
+.PHONY : main.s
+
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ForwardKinematics.dir/build.make CMakeFiles/ForwardKinematics.dir/main.cpp.s
+.PHONY : main.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -261,15 +291,18 @@ help:
 	@echo "... ForwardKinematics"
 	@echo "... IK_Solver"
 	@echo "... NeuroKinematics"
-	@echo "... ForwardKinematics.o"
-	@echo "... ForwardKinematics.i"
-	@echo "... ForwardKinematics.s"
 	@echo "... IK_Solver.o"
 	@echo "... IK_Solver.i"
 	@echo "... IK_Solver.s"
 	@echo "... NeuroKinematics/NeuroKinematics.o"
 	@echo "... NeuroKinematics/NeuroKinematics.i"
 	@echo "... NeuroKinematics/NeuroKinematics.s"
+	@echo "... include/ForwardKinematics/ForwardKinematics.o"
+	@echo "... include/ForwardKinematics/ForwardKinematics.i"
+	@echo "... include/ForwardKinematics/ForwardKinematics.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 .PHONY : help
 
 

@@ -4,7 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/ForwardKinematics.cpp" "/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.o"
+  "/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/include/ForwardKinematics/ForwardKinematics.cpp" "/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o"
+  "/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/main.cpp" "/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/ForwardKinematics.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -18,6 +19,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../NeuroKinematics"
+  "../include/ForwardKinematics"
   "/home/aimlab/Documents/NRI_Project/VTK/VTK-build/Common/Color"
   "/home/aimlab/Documents/NRI_Project/VTK/vtk/Common/Color"
   "/home/aimlab/Documents/NRI_Project/VTK/VTK-build/Common/Core"
