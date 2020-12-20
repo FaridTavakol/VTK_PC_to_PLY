@@ -1,25 +1,25 @@
 Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
 Change Dir: /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_dad75/fast && /usr/bin/make  -f CMakeFiles/cmTC_dad75.dir/build.make CMakeFiles/cmTC_dad75.dir/build
+Run Build Command(s):/usr/bin/make cmTC_c2f6b/fast && /usr/bin/make  -f CMakeFiles/cmTC_c2f6b.dir/build.make CMakeFiles/cmTC_c2f6b.dir/build
 make[1]: Entering directory '/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_dad75.dir/src.c.o
-/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_dad75.dir/src.c.o   -c /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp/src.c
-Linking C executable cmTC_dad75
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dad75.dir/link.txt --verbose=1
-/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    CMakeFiles/cmTC_dad75.dir/src.c.o  -o cmTC_dad75 
-CMakeFiles/cmTC_dad75.dir/src.c.o: In function `main':
+Building C object CMakeFiles/cmTC_c2f6b.dir/src.c.o
+/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_c2f6b.dir/src.c.o   -c /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_c2f6b
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c2f6b.dir/link.txt --verbose=1
+/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    CMakeFiles/cmTC_c2f6b.dir/src.c.o  -o cmTC_c2f6b 
+CMakeFiles/cmTC_c2f6b.dir/src.c.o: In function `main':
 src.c:(.text+0x3e): undefined reference to `pthread_create'
 src.c:(.text+0x4a): undefined reference to `pthread_detach'
 src.c:(.text+0x56): undefined reference to `pthread_cancel'
 src.c:(.text+0x67): undefined reference to `pthread_join'
 src.c:(.text+0x7b): undefined reference to `pthread_atfork'
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_dad75.dir/build.make:106: recipe for target 'cmTC_dad75' failed
-make[1]: *** [cmTC_dad75] Error 1
+CMakeFiles/cmTC_c2f6b.dir/build.make:106: recipe for target 'cmTC_c2f6b' failed
+make[1]: *** [cmTC_c2f6b] Error 1
 make[1]: Leaving directory '/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp'
-Makefile:141: recipe for target 'cmTC_dad75/fast' failed
-make: *** [cmTC_dad75/fast] Error 2
+Makefile:141: recipe for target 'cmTC_c2f6b/fast' failed
+make: *** [cmTC_c2f6b/fast] Error 2
 
 
 Source file was:
@@ -46,71 +46,20 @@ int main(void)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_7566f/fast && /usr/bin/make  -f CMakeFiles/cmTC_7566f.dir/build.make CMakeFiles/cmTC_7566f.dir/build
+Run Build Command(s):/usr/bin/make cmTC_90db1/fast && /usr/bin/make  -f CMakeFiles/cmTC_90db1.dir/build.make CMakeFiles/cmTC_90db1.dir/build
 make[1]: Entering directory '/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_7566f.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_7566f.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.17/Modules/CheckFunctionExists.c
-Linking C executable cmTC_7566f
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7566f.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_7566f.dir/CheckFunctionExists.c.o  -o cmTC_7566f  -lpthreads 
+Building C object CMakeFiles/cmTC_90db1.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_90db1.dir/CheckFunctionExists.c.o   -c /usr/local/share/cmake-3.17/Modules/CheckFunctionExists.c
+Linking C executable cmTC_90db1
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_90db1.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_90db1.dir/CheckFunctionExists.c.o  -o cmTC_90db1  -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_7566f.dir/build.make:106: recipe for target 'cmTC_7566f' failed
-make[1]: *** [cmTC_7566f] Error 1
+CMakeFiles/cmTC_90db1.dir/build.make:106: recipe for target 'cmTC_90db1' failed
+make[1]: *** [cmTC_90db1] Error 1
 make[1]: Leaving directory '/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp'
-Makefile:141: recipe for target 'cmTC_7566f/fast' failed
-make: *** [cmTC_7566f/fast] Error 2
-
-
-
-Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
-Change Dir: /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp
-
-Run Build Command(s):/usr/bin/ninja cmTC_9ff42 && [1/2] Building C object CMakeFiles/cmTC_9ff42.dir/src.c.o
-[2/2] Linking C executable cmTC_9ff42
-FAILED: cmTC_9ff42 
-: && /usr/bin/clang-6.0 -DCMAKE_HAVE_LIBC_PTHREAD   CMakeFiles/cmTC_9ff42.dir/src.c.o  -o cmTC_9ff42   && :
-CMakeFiles/cmTC_9ff42.dir/src.c.o: In function `main':
-src.c:(.text+0x35): undefined reference to `pthread_create'
-src.c:(.text+0x41): undefined reference to `pthread_detach'
-src.c:(.text+0x4d): undefined reference to `pthread_cancel'
-src.c:(.text+0x5f): undefined reference to `pthread_join'
-src.c:(.text+0x76): undefined reference to `pthread_atfork'
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
-ninja: build stopped: subcommand failed.
-
-
-Source file was:
-#include <pthread.h>
-
-void* test_func(void* data)
-{
-  return data;
-}
-
-int main(void)
-{
-  pthread_t thread;
-  pthread_create(&thread, NULL, test_func, NULL);
-  pthread_detach(thread);
-  pthread_cancel(thread);
-  pthread_join(thread, NULL);
-  pthread_atfork(NULL, NULL, NULL);
-  pthread_exit(NULL);
-
-  return 0;
-}
-
-Determining if the function pthread_create exists in the pthreads failed with the following output:
-Change Dir: /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp
-
-Run Build Command(s):/usr/bin/ninja cmTC_14735 && [1/2] Building C object CMakeFiles/cmTC_14735.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_14735
-FAILED: cmTC_14735 
-: && /usr/bin/clang-6.0 -DCHECK_FUNCTION_EXISTS=pthread_create   CMakeFiles/cmTC_14735.dir/CheckFunctionExists.c.o  -o cmTC_14735  -lpthreads && :
-/usr/bin/ld: cannot find -lpthreads
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
-ninja: build stopped: subcommand failed.
+Makefile:141: recipe for target 'cmTC_90db1/fast' failed
+make: *** [cmTC_90db1/fast] Error 2
 
 
 

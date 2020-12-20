@@ -90,17 +90,32 @@ CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.s: cmake_forc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/NeuroKinematics/NeuroKinematics.cpp -o CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.s
 
+CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o: CMakeFiles/NeuroKinematics.dir/flags.make
+CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o: ../include/ForwardKinematics/ForwardKinematics.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o -c /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/include/ForwardKinematics/ForwardKinematics.cpp
+
+CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/include/ForwardKinematics/ForwardKinematics.cpp > CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.i
+
+CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/include/ForwardKinematics/ForwardKinematics.cpp -o CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.s
+
 # Object files for target NeuroKinematics
 NeuroKinematics_OBJECTS = \
-"CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.o"
+"CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.o" \
+"CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o"
 
 # External object files for target NeuroKinematics
 NeuroKinematics_EXTERNAL_OBJECTS =
 
 libNeuroKinematics.a: CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.o
+libNeuroKinematics.a: CMakeFiles/NeuroKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o
 libNeuroKinematics.a: CMakeFiles/NeuroKinematics.dir/build.make
 libNeuroKinematics.a: CMakeFiles/NeuroKinematics.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libNeuroKinematics.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library libNeuroKinematics.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/NeuroKinematics.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/NeuroKinematics.dir/link.txt --verbose=$(VERBOSE)
 

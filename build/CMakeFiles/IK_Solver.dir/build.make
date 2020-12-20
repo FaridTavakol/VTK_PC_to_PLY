@@ -99,24 +99,25 @@ IK_Solver_EXTERNAL_OBJECTS =
 
 IK_Solver: CMakeFiles/IK_Solver.dir/IK_Solver.cpp.o
 IK_Solver: CMakeFiles/IK_Solver.dir/build.make
+IK_Solver: libNeuroKinematics.a
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOGeometry-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOPLY-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkInteractionStyle-9.0.so.9.0.0
-IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libPoissonReconstruction-9.0.so.9.0.0
-IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libPowercrust-9.0.so.9.0.0
-IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingContextOpenGL2-9.0.so.9.0.0
-IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingGL2PSOpenGL2-9.0.so.9.0.0
-IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingOpenGL2-9.0.so.9.0.0
-IK_Solver: libNeuroKinematics.a
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOLegacy-9.0.so.9.0.0
+IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libPoissonReconstruction-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOXML-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOXMLParser-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOCore-9.0.so.9.0.0
+IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libPowercrust-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkFiltersPoints-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkFiltersModeling-9.0.so.9.0.0
+IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingContextOpenGL2-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingContext2D-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingFreeType-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkfreetype-9.0.so.9.0.0
+IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingGL2PSOpenGL2-9.0.so.9.0.0
+IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkzlib-9.0.so.9.0.0
+IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingOpenGL2-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingUI-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingCore-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonColor-9.0.so.9.0.0
@@ -127,14 +128,13 @@ IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonExec
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonDataModel-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonTransforms-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonMisc-9.0.so.9.0.0
+IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonMath-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkglew-9.0.so.9.0.0
 IK_Solver: /usr/lib/x86_64-linux-gnu/libGLX.so
 IK_Solver: /usr/lib/x86_64-linux-gnu/libOpenGL.so
 IK_Solver: /usr/lib/x86_64-linux-gnu/libX11.so
-IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonMath-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonCore-9.0.so.9.0.0
 IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtksys-9.0.so.9.0.0
-IK_Solver: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkzlib-9.0.so.9.0.0
 IK_Solver: CMakeFiles/IK_Solver.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable IK_Solver"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/IK_Solver.dir/link.txt --verbose=$(VERBOSE)

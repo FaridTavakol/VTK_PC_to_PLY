@@ -77,46 +77,62 @@ include CMakeFiles/ForwardKinematics.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/ForwardKinematics.dir/flags.make
 
-CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.o: CMakeFiles/ForwardKinematics.dir/flags.make
-CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.o: ../ForwardKinematics.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.o -c /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/ForwardKinematics.cpp
+CMakeFiles/ForwardKinematics.dir/main.cpp.o: CMakeFiles/ForwardKinematics.dir/flags.make
+CMakeFiles/ForwardKinematics.dir/main.cpp.o: ../main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ForwardKinematics.dir/main.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ForwardKinematics.dir/main.cpp.o -c /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/main.cpp
 
-CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/ForwardKinematics.cpp > CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.i
+CMakeFiles/ForwardKinematics.dir/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ForwardKinematics.dir/main.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/main.cpp > CMakeFiles/ForwardKinematics.dir/main.cpp.i
 
-CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/ForwardKinematics.cpp -o CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.s
+CMakeFiles/ForwardKinematics.dir/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ForwardKinematics.dir/main.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/main.cpp -o CMakeFiles/ForwardKinematics.dir/main.cpp.s
+
+CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o: CMakeFiles/ForwardKinematics.dir/flags.make
+CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o: ../include/ForwardKinematics/ForwardKinematics.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o -c /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/include/ForwardKinematics/ForwardKinematics.cpp
+
+CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/include/ForwardKinematics/ForwardKinematics.cpp > CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.i
+
+CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/include/ForwardKinematics/ForwardKinematics.cpp -o CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.s
 
 # Object files for target ForwardKinematics
 ForwardKinematics_OBJECTS = \
-"CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.o"
+"CMakeFiles/ForwardKinematics.dir/main.cpp.o" \
+"CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o"
 
 # External object files for target ForwardKinematics
 ForwardKinematics_EXTERNAL_OBJECTS =
 
-ForwardKinematics: CMakeFiles/ForwardKinematics.dir/ForwardKinematics.cpp.o
+ForwardKinematics: CMakeFiles/ForwardKinematics.dir/main.cpp.o
+ForwardKinematics: CMakeFiles/ForwardKinematics.dir/include/ForwardKinematics/ForwardKinematics.cpp.o
 ForwardKinematics: CMakeFiles/ForwardKinematics.dir/build.make
+ForwardKinematics: libNeuroKinematics.a
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOGeometry-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOPLY-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkInteractionStyle-9.0.so.9.0.0
-ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libPoissonReconstruction-9.0.so.9.0.0
-ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libPowercrust-9.0.so.9.0.0
-ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingContextOpenGL2-9.0.so.9.0.0
-ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingGL2PSOpenGL2-9.0.so.9.0.0
-ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingOpenGL2-9.0.so.9.0.0
-ForwardKinematics: libNeuroKinematics.a
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOLegacy-9.0.so.9.0.0
+ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libPoissonReconstruction-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOXML-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOXMLParser-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkIOCore-9.0.so.9.0.0
+ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libPowercrust-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkFiltersPoints-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkFiltersModeling-9.0.so.9.0.0
+ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingContextOpenGL2-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingContext2D-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingFreeType-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkfreetype-9.0.so.9.0.0
+ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingGL2PSOpenGL2-9.0.so.9.0.0
+ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkzlib-9.0.so.9.0.0
+ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingOpenGL2-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingUI-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkRenderingCore-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonColor-9.0.so.9.0.0
@@ -127,16 +143,15 @@ ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCo
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonDataModel-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonTransforms-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonMisc-9.0.so.9.0.0
+ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonMath-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkglew-9.0.so.9.0.0
 ForwardKinematics: /usr/lib/x86_64-linux-gnu/libGLX.so
 ForwardKinematics: /usr/lib/x86_64-linux-gnu/libOpenGL.so
 ForwardKinematics: /usr/lib/x86_64-linux-gnu/libX11.so
-ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonMath-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkCommonCore-9.0.so.9.0.0
 ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtksys-9.0.so.9.0.0
-ForwardKinematics: /home/aimlab/Documents/NRI_Project/VTK/VTK-build/lib/libvtkzlib-9.0.so.9.0.0
 ForwardKinematics: CMakeFiles/ForwardKinematics.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ForwardKinematics"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ForwardKinematics"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ForwardKinematics.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

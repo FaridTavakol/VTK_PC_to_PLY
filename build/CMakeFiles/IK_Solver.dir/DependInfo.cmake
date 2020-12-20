@@ -18,6 +18,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../NeuroKinematics"
+  "../include/ForwardKinematics"
   "/home/aimlab/Documents/NRI_Project/VTK/VTK-build/Common/Color"
   "/home/aimlab/Documents/NRI_Project/VTK/vtk/Common/Color"
   "/home/aimlab/Documents/NRI_Project/VTK/VTK-build/Common/Core"
