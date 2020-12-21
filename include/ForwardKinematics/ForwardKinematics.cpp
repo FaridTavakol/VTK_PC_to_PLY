@@ -632,6 +632,171 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_Workspace(Eigen::Matrix4d 
   AxialFeetTranslation = 68;
   AxialHeadTranslation = 0;
   double Top_max_travel{-157};
+  for (i = Top_max_travel / 10; i >= Top_max_travel; i += Top_max_travel / 10) // initial separation 143, min separation 75 => 143-75 = 68 mm
+  {
+    AxialHeadTranslation += Top_max_travel / 10;
+    AxialFeetTranslation += Top_max_travel / 10;
+    for (k = -49.0; k >= -98.0; k += -49 / 10) // max lateral movement 0.0 ~ -49.47 (appx = -49)
+    {
+      LateralTranslation = k;
+      RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                     LateralTranslation, ProbeInsertion,
+                                     ProbeRotation, PitchRotation, YawRotation);
+      nan_checker(RCM, counter);
+      Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+      transferred_point = get_Transform(registration_inv, RCM);
+      points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+      myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
+    }
+  }
+
+  // loop for visualizing the bottom
+  ++counter;
+  AxialHeadTranslation = 0;
+  AxialFeetTranslation = -3;
+  double max_travel_bottom{-86};
+  for (i = 0; i >= max_travel_bottom; i += max_travel_bottom / 10) //
+  {
+    if (i == 0) // for the beginning row
+    {
+      for (k = -49.0; k >= -98.0; k += -49 / 10)
+      {
+        LateralTranslation = k;
+        RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                       LateralTranslation, ProbeInsertion,
+                                       ProbeRotation, PitchRotation, YawRotation);
+        nan_checker(RCM, counter);
+        Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+        transferred_point = get_Transform(registration_inv, RCM);
+        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
+      }
+    }
+    else
+    {
+      AxialHeadTranslation += max_travel_bottom / 10;
+      AxialFeetTranslation += max_travel_bottom / 10;
+      for (k = -49.0; k >= -98.0; k += -49 / 10)
+      {
+        LateralTranslation = k;
+        RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                       LateralTranslation, ProbeInsertion,
+                                       ProbeRotation, PitchRotation, YawRotation);
+        nan_checker(RCM, counter);
+        Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+        transferred_point = get_Transform(registration_inv, RCM);
+        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
+      }
+    }
+  }
+  AxialFeetTranslation = -3;
+  AxialHeadTranslation = 0;
+
+  // Loop for creating the head face
+  ++counter;
+  for (j = 7.1; j <= 71; j += 7.1)
+  {
+    AxialFeetTranslation += 7.1;
+
+    for (k = -49.0; k >= -98.0; k += -49 / 10)
+    {
+      LateralTranslation = k;
+
+      RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                     LateralTranslation, ProbeInsertion,
+                                     ProbeRotation, PitchRotation, YawRotation);
+      nan_checker(RCM, counter);
+      Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+      transferred_point = get_Transform(registration_inv, RCM);
+      points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+      myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
+    }
+  }
+  AxialFeetTranslation = -89;
+  AxialHeadTranslation = -86;
+
+  // Loop for creating the feet face
+  ++counter;
+  for (j = min_seperation / 10; j <= min_seperation; j += min_seperation / 10)
+  {
+    AxialHeadTranslation -= min_seperation / 10;
+
+    for (k = -49.0; k >= -98.0; k += -49 / 10)
+    {
+      LateralTranslation = k;
+
+      RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                     LateralTranslation, ProbeInsertion,
+                                     ProbeRotation, PitchRotation, YawRotation);
+      nan_checker(RCM, counter);
+      Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+      transferred_point = get_Transform(registration_inv, RCM);
+      points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+      myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
+    }
+  }
+
+  //loop for creating the sides
+  ++counter;
+  AxialFeetTranslation = -3;
+  AxialHeadTranslation = 0;
+  double min_travel{-86};  // The max that the robot can move in z direction when at lowest height (at each hight min travel is changed)
+  double max_travel{-157}; //157 The max that the robot can move in z direction when at highest height
+  for (j = min_seperation / 10; j <= Abs_min_leg_separation; j += min_seperation / 10)
+  {
+    AxialFeetTranslation += j;         // For each loop it will lift the base by a constant value
+    min_travel -= min_seperation / 10; // Takes care of the amount of Axial travel for the Axial head and feet
+
+    for (ii = 0; ii > min_travel + 1 && min_travel >= max_travel; ii += min_travel / 10) // loop to move the base from Head to feet based on the allowable max movement range (min_travel)
+    {
+      AxialHeadTranslation += min_travel / 10;
+      AxialFeetTranslation += min_travel / 10;
+      for (k = -49.0; k >= -49 * 2; k += -49)
+      {
+        LateralTranslation = k;
+        RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                       LateralTranslation, ProbeInsertion,
+                                       ProbeRotation, PitchRotation, YawRotation);
+        nan_checker(RCM, counter);
+        Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
+        transferred_point = get_Transform(registration_inv, RCM);
+        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
+        std::cerr << "K value is: " << k << std::endl;
+      }
+    }
+    AxialFeetTranslation = -3;
+    AxialHeadTranslation = 0;
+  }
+  std::cout << "# of points: " << points->GetNumberOfPoints();
+  myout.close();
+  return points;
+}
+vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration, vtkSmartPointer<vtkPoints> points)
+{
+  // To visualize the transferred points in the slicer without using the Transform Module
+  Eigen::Matrix4d registration_inv = registration.inverse();
+  std::cerr << "Inverse of the registration matrix is: \n"
+            << registration_inv << std::endl;
+
+  // Vector to store points before transformation
+  Eigen::Vector4d point(0.0, 0.0, 0.0, 0.0);
+
+  // Object containing the 4x4 transformation matrix
+  Neuro_FK_outputs RCM{};
+  ofstream myout("RCM_workspace.xyz");
+  /*============================================================================================================
+     =============================================RCM computation============================================
+      ==================================================================================================*/
+
+  double min_seperation{71}; //71
+  const double Abs_min_leg_separation{68};
+  // Loop for visualizing the top
+  ++counter;
+  AxialFeetTranslation = 68;
+  AxialHeadTranslation = 0;
+  double Top_max_travel{-157};
   for (i = Top_max_travel / 100; i >= Top_max_travel; i += Top_max_travel / 100) // initial separation 143, min separation 75 => 143-75 = 68 mm
   {
     AxialHeadTranslation += Top_max_travel / 100;
