@@ -41,8 +41,8 @@ int main(int argc, char *argv[])
         0, 0, 1, 0,
         0, 0, 0, 1;
 
+    // Generating General Workspace
     vtkSmartPointer<vtkPoints> General_Workspace_PC = vtkSmartPointer<vtkPoints>::New();
-    std::cout << "Im here\n";
     General_Workspace_PC = ForwardKinematics_.get_General_Workspace(registration, General_Workspace_PC);
     // std::cout << "# of points: " << General_Workspace_PC->GetNumberOfPoints();
     // vtkSmartPointer<vtkPoints> RCM_points = vtkSmartPointer<vtkPoints>::New();
@@ -57,9 +57,6 @@ int main(int argc, char *argv[])
     writer_General_Workspace_PC->SetFileName("General_Workspace.vtp");
     writer_General_Workspace_PC->SetInputData(polydata_General_Workspace_PC);
     writer_General_Workspace_PC->Write();
-    // Optional - set the mode. The default is binary.
-    //writer->SetDataModeToBinary();
-    //writer->SetDataModeToAscii();
 
     std::cerr << "Using PowerCrust Algorithm to create General Workspace surface mesh" << std::endl;
     vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface_General_Workspace =
@@ -72,151 +69,30 @@ int main(int argc, char *argv[])
     std::cout << "Writing " << filename_General_workspace_ply << std::endl;
     plyWriter_General_Workspace->Write();
 
-    // // Create a polydata object and add the points to it.
-    // vtkSmartPointer<vtkPolyData> polydata =
-    //     vtkSmartPointer<vtkPolyData>::New();
-    // polydata->SetPoints(points);
-    // std::cout << "# of points: " << polydata->GetNumberOfPoints() << std::endl;
-    // // Write the .VTP (point cloud) file
-    // vtkSmartPointer<vtkXMLPolyDataWriter> writer =
-    //     vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-    // writer->SetFileName("FK.vtp");
-    // writer->SetInputData(polydata);
-    // writer->Write();
-    // // Optional - set the mode. The default is binary.
-    // //writer->SetDataModeToBinary();
-    // //writer->SetDataModeToAscii();
-    // std::string filename{"FK.ply"};
+    // Generating RCM Workspace
+    vtkSmartPointer<vtkPoints> RCM_Workspace_PC = vtkSmartPointer<vtkPoints>::New();
+    RCM_Workspace_PC = ForwardKinematics_.get_RCM_Workspace(registration, RCM_Workspace_PC);
+    // std::cout << "# of points: " << RCM_Workspace_PC->GetNumberOfPoints();
+    // Create a polydata object and add the points to it.
+    vtkSmartPointer<vtkPolyData> polydata_RCM_Workspace_PC = vtkSmartPointer<vtkPolyData>::New();
+    polydata_RCM_Workspace_PC->SetPoints(RCM_Workspace_PC);
+    std::cout << "# of points: " << polydata_RCM_Workspace_PC->GetNumberOfPoints() << std::endl;
 
-    // cerr << "Using PowerCrust Algorithm" << std::endl;
-    // vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface =
-    //     vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
-    // surface->SetInputData(polydata);
-    // std::string filename = argv[1];
-    // vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
-    // plyWriter->SetFileName(filename.c_str());
-    // plyWriter->SetInputConnection(surface->GetOutputPort());
-    // std::cout << "Writing " << filename << std::endl;
-    // plyWriter->Write();
+    // Write the .VTP (point cloud) file
+    vtkSmartPointer<vtkXMLPolyDataWriter> writer_RCM_Workspace_PC =
+        vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+    writer_RCM_Workspace_PC->SetFileName("General_Workspace.vtp");
+    writer_RCM_Workspace_PC->SetInputData(polydata_RCM_Workspace_PC);
+    writer_RCM_Workspace_PC->Write();
 
-    // cerr << "Using Poisson's Algorithm" << std::endl;
-    // vtkSmartPointer<vtkPoissonReconstruction> surface =
-    //     vtkSmartPointer<vtkPoissonReconstruction>::New();
-    // surface->SetDepth(12);
-    // int sampleSize = polydata->GetNumberOfPoints() * .00005;
-    // if (sampleSize < 10)
-    // {
-    //     sampleSize = 10;
-    // }
-    // if (polydata->GetPointData()->GetNormals())
-    // {
-    //     std::cout << "Using normals from input file" << std::endl;
-    //     surface->SetInputData(polydata);
-    // }
-    // else
-    // {
-    //     std::cout << "Estimating normals using PCANormalEstimation" << std::endl;
-    //     vtkSmartPointer<vtkPCANormalEstimation> normals =
-    //         vtkSmartPointer<vtkPCANormalEstimation>::New();
-    //     normals->SetInputData(polydata);
-    //     normals->SetSampleSize(sampleSize);
-    //     normals->SetNormalOrientationToGraphTraversal();
-    //     normals->FlipNormalsOff();
-    //     surface->SetInputConnection(normals->GetOutputPort());
-    // }
-    // std::string filename = argv[1];
-    // vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
-    // plyWriter->SetFileName(filename.c_str());
-    // plyWriter->SetInputConnection(surface->GetOutputPort());
-    // std::cout << "Writing " << filename << std::endl;
-    // plyWriter->Write();
-    // vtkSmartPointer<vtkPoints> RCM_points = vtkSmartPointer<vtkPoints>::New();
-    // RCM_points = create_RCM_workspace();
-    // // Create a polydata object and add the points to it.
-    // vtkSmartPointer<vtkPolyData> polydata_RCM =
-    //     vtkSmartPointer<vtkPolyData>::New();
-    // polydata_RCM->SetPoints(RCM_points);
-    // std::cout << "# of points: " << polydata_RCM->GetNumberOfPoints() << std::endl;
-    // // Write the .VTP (point cloud) file
-    // vtkSmartPointer<vtkXMLPolyDataWriter> writer_RCM =
-    //     vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-    // writer_RCM->SetFileName("RCM.vtp");
-    // writer_RCM->SetInputData(polydata_RCM);
-    // writer_RCM->Write();
-    // // Optional - set the mode. The default is binary.
-    // //writer->SetDataModeToBinary();
-    // //writer->SetDataModeToAscii();
-    // cerr << "Using PowerCrust Algorithm" << std::endl;
-    // vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface_RCM =
-    //     vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
-    // surface_RCM->SetInputData(polydata_RCM);
-    // std::string filename_RCM_ply = "RCM.ply";
-    // vtkSmartPointer<vtkPLYWriter> plyWriter_RCM = vtkSmartPointer<vtkPLYWriter>::New();
-    // plyWriter_RCM->SetFileName(filename_RCM_ply.c_str());
-    // plyWriter_RCM->SetInputConnection(surface_RCM->GetOutputPort());
-    // std::cout << "Writing " << filename_RCM_ply << std::endl;
-    // plyWriter_RCM->Write();
-
-    // // Create a polydata object and add the points to it.
-    // vtkSmartPointer<vtkPolyData> polydata =
-    //     vtkSmartPointer<vtkPolyData>::New();
-    // polydata->SetPoints(points);
-    // std::cout << "# of points: " << polydata->GetNumberOfPoints() << std::endl;
-    // // Write the .VTP (point cloud) file
-    // vtkSmartPointer<vtkXMLPolyDataWriter> writer =
-    //     vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-    // writer->SetFileName("FK.vtp");
-    // writer->SetInputData(polydata);
-    // writer->Write();
-    // // Optional - set the mode. The default is binary.
-    // //writer->SetDataModeToBinary();
-    // //writer->SetDataModeToAscii();
-    // std::string filename{"FK.ply"};
-
-    // // choose the algorithm for surface generation
-
-    // cerr << "Using PowerCrust Algorithm" << std::endl;
-    // vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface =
-    //     vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
-    // surface->SetInputData(polydata);
-    // std::string filename = argv[1];
-    // vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
-    // plyWriter->SetFileName(filename.c_str());
-    // plyWriter->SetInputConnection(surface->GetOutputPort());
-    // std::cout << "Writing " << filename << std::endl;
-    // plyWriter->Write();
-
-    // // creating a surface using Poisson's algorithm
-
-    // cerr << "Using Poisson's Algorithm" << std::endl;
-    // vtkSmartPointer<vtkPoissonReconstruction> surface =
-    //     vtkSmartPointer<vtkPoissonReconstruction>::New();
-    // surface->SetDepth(12);
-    // int sampleSize = polydata->GetNumberOfPoints() * .00005;
-    // if (sampleSize < 10)
-    // {
-    //     sampleSize = 10;
-    // }
-    // if (polydata->GetPointData()->GetNormals())
-    // {
-    //     std::cout << "Using normals from input file" << std::endl;
-    //     surface->SetInputData(polydata);
-    // }
-    // else
-    // {
-    //     std::cout << "Estimating normals using PCANormalEstimation" << std::endl;
-    //     vtkSmartPointer<vtkPCANormalEstimation> normals =
-    //         vtkSmartPointer<vtkPCANormalEstimation>::New();
-    //     normals->SetInputData(polydata);
-    //     normals->SetSampleSize(sampleSize);
-    //     normals->SetNormalOrientationToGraphTraversal();
-    //     normals->FlipNormalsOff();
-    //     surface->SetInputConnection(normals->GetOutputPort());
-    // }
-    // std::string filename = argv[1];
-    // vtkSmartPointer<vtkPLYWriter> plyWriter = vtkSmartPointer<vtkPLYWriter>::New();
-    // plyWriter->SetFileName(filename.c_str());
-    // plyWriter->SetInputConnection(surface->GetOutputPort());
-    // std::cout << "Writing " << filename << std::endl;
-    // plyWriter->Write();
+    std::cerr << "Using PowerCrust Algorithm to create RCM Workspace surface mesh" << std::endl;
+    vtkSmartPointer<vtkPowerCrustSurfaceReconstruction> surface_RCM_Workspace =
+        vtkSmartPointer<vtkPowerCrustSurfaceReconstruction>::New();
+    surface_RCM_Workspace->SetInputData(polydata_RCM_Workspace_PC);
+    std::string filename_RCM_workspace_ply = "RCM_Workspace.ply";
+    vtkSmartPointer<vtkPLYWriter> plyWriter_RCM_Workspace = vtkSmartPointer<vtkPLYWriter>::New();
+    plyWriter_RCM_Workspace->SetFileName(filename_RCM_workspace_ply.c_str());
+    plyWriter_RCM_Workspace->SetInputConnection(surface_RCM_Workspace->GetOutputPort());
+    std::cout << "Writing " << filename_RCM_workspace_ply << std::endl;
+    plyWriter_RCM_Workspace->Write();
 }

@@ -24,6 +24,7 @@
 struct Neuro_FK_outputs
 {
   Eigen::Matrix4d zFrameToTreatment;
+  
 };
 
 struct Neuro_IK_outputs
@@ -92,6 +93,9 @@ public:
   Neuro_FK_outputs ForwardKinematics(double AxialHeadTranslation, double AxialFeetTranslation,
                                      double LateralTranslation, double ProbeInsertion,
                                      double ProbeRotation, double PitchRotation, double YawRotation);
+  Neuro_FK_outputs get_RCM(double AxialHeadTranslation, double AxialFeetTranslation,
+                           double LateralTranslation, double ProbeInsertion,
+                           double ProbeRotation, double PitchRotation, double YawRotation);
 
   Neuro_IK_outputs InverseKinematics(Eigen::Vector4d entryPointzFrame, Eigen::Vector4d targetPointzFrame);
   // IK Method for calculation of the cartesian base based on a given Entry point

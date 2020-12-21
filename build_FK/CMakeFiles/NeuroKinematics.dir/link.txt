@@ -1,2 +1,0 @@
-/usr/bin/ar qc libNeuroKinematics.a  CMakeFiles/NeuroKinematics.dir/NeuroKinematics/NeuroKinematics.cpp.o
-/usr/bin/ranlib libNeuroKinematics.a

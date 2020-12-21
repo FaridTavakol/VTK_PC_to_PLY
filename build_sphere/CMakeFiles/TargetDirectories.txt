@@ -1,5 +1,0 @@
-/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_sphere/CMakeFiles/edit_cache.dir
-/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_sphere/CMakeFiles/IK_Solver.dir
-/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_sphere/CMakeFiles/rebuild_cache.dir
-/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_sphere/CMakeFiles/ForwardKinematics.dir
-/home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build_sphere/CMakeFiles/NeuroKinematics.dir
