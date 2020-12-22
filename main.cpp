@@ -95,4 +95,7 @@ int main(int argc, char *argv[])
     plyWriter_RCM_Workspace->SetInputConnection(surface_RCM_Workspace->GetOutputPort());
     std::cout << "Writing " << filename_RCM_workspace_ply << std::endl;
     plyWriter_RCM_Workspace->Write();
+
+    // Testing the RCM_PC method
+    ForwardKinematics_.get_RCM_PC(registration);
 }

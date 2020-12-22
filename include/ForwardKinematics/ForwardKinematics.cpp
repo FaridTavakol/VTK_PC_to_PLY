@@ -763,7 +763,6 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_Workspace(Eigen::Matrix4d 
         transferred_point = get_Transform(registration_inv, RCM);
         points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
-        std::cerr << "K value is: " << k << std::endl;
       }
     }
     AxialFeetTranslation = -3;
@@ -773,9 +772,8 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_Workspace(Eigen::Matrix4d 
   myout.close();
   return points;
 }
-vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration, vtkSmartPointer<vtkPoints> points)
-{
-  // To visualize the transferred points in the slicer without using the Transform Module
+int ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
+{ // To visualize the transferred points in the slicer without using the Transform Module
   Eigen::Matrix4d registration_inv = registration.inverse();
   std::cerr << "Inverse of the registration matrix is: \n"
             << registration_inv << std::endl;
@@ -784,33 +782,34 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registr
   Eigen::Vector4d point(0.0, 0.0, 0.0, 0.0);
 
   // Object containing the 4x4 transformation matrix
-  Neuro_FK_outputs RCM{};
-  ofstream myout("RCM_workspace.xyz");
+  Neuro_FK_outputs RCM_PC{};
+  ofstream myout("RCM_PC.xyz");
   /*============================================================================================================
      =============================================RCM computation============================================
       ==================================================================================================*/
 
   double min_seperation{71}; //71
+  const double division{100};
   const double Abs_min_leg_separation{68};
   // Loop for visualizing the top
   ++counter;
   AxialFeetTranslation = 68;
   AxialHeadTranslation = 0;
-  double Top_max_travel{-157};
-  for (i = Top_max_travel / 100; i >= Top_max_travel; i += Top_max_travel / 100) // initial separation 143, min separation 75 => 143-75 = 68 mm
+  double Top_max_travel{-157};                                                             //-157
+  for (i = Top_max_travel / division; i >= Top_max_travel; i += Top_max_travel / division) // initial separation 143, min separation 75 => 143-75 = 68 mm
   {
-    AxialHeadTranslation += Top_max_travel / 100;
-    AxialFeetTranslation += Top_max_travel / 100;
-    for (k = -49.0; k >= -98; k -= 1.0) // max lateral movement 0.0 ~ -49.47 (appx = -49)
+    AxialHeadTranslation += Top_max_travel / division;
+    AxialFeetTranslation += Top_max_travel / division;
+    for (k = -49.0; k >= -98.0; k += -49 / 10) // max lateral movement 0.0 ~ -49.47 (appx = -49)
     {
       LateralTranslation = k;
-      RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
-                                     LateralTranslation, ProbeInsertion,
-                                     ProbeRotation, PitchRotation, YawRotation);
-      nan_checker(RCM, counter);
+      RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                        LateralTranslation, ProbeInsertion,
+                                        ProbeRotation, PitchRotation, YawRotation);
+      nan_checker(RCM_PC, counter);
       Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-      transferred_point = get_Transform(registration_inv, RCM);
-      points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+      transferred_point = get_Transform(registration_inv, RCM_PC);
+      // points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
       myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
     }
   }
@@ -820,37 +819,37 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registr
   AxialHeadTranslation = 0;
   AxialFeetTranslation = -3;
   double max_travel_bottom{-86};
-  for (i = 0; i >= max_travel_bottom; i += max_travel_bottom / 10) //
+  for (i = 0; i >= max_travel_bottom; i += max_travel_bottom / division) //
   {
     if (i == 0) // for the beginning row
     {
-      for (k = -49.0; k >= -98; k -= 1.0)
+      for (k = -49.0; k >= -98.0; k += -49 / 10)
       {
         LateralTranslation = k;
-        RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
-                                       LateralTranslation, ProbeInsertion,
-                                       ProbeRotation, PitchRotation, YawRotation);
-        nan_checker(RCM, counter);
+        RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                          LateralTranslation, ProbeInsertion,
+                                          ProbeRotation, PitchRotation, YawRotation);
+        nan_checker(RCM_PC, counter);
         Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-        transferred_point = get_Transform(registration_inv, RCM);
-        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        transferred_point = get_Transform(registration_inv, RCM_PC);
+        // points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
     }
     else
     {
-      AxialHeadTranslation += max_travel_bottom / 10;
-      AxialFeetTranslation += max_travel_bottom / 10;
-      for (k = -49.0; k >= -98; k -= 1.0)
+      AxialHeadTranslation += max_travel_bottom / division;
+      AxialFeetTranslation += max_travel_bottom / division;
+      for (k = -49.0; k >= -98.0; k += -49 / 10)
       {
         LateralTranslation = k;
-        RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
-                                       LateralTranslation, ProbeInsertion,
-                                       ProbeRotation, PitchRotation, YawRotation);
-        nan_checker(RCM, counter);
+        RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                          LateralTranslation, ProbeInsertion,
+                                          ProbeRotation, PitchRotation, YawRotation);
+        nan_checker(RCM_PC, counter);
         Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-        transferred_point = get_Transform(registration_inv, RCM);
-        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        transferred_point = get_Transform(registration_inv, RCM_PC);
+        // points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
     }
@@ -864,17 +863,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registr
   {
     AxialFeetTranslation += 7.1;
 
-    for (k = -49.0; k >= -98; k -= 1.0)
+    for (k = -49.0; k >= -98.0; k += -49 / 10)
     {
       LateralTranslation = k;
 
-      RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
-                                     LateralTranslation, ProbeInsertion,
-                                     ProbeRotation, PitchRotation, YawRotation);
-      nan_checker(RCM, counter);
+      RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                        LateralTranslation, ProbeInsertion,
+                                        ProbeRotation, PitchRotation, YawRotation);
+      nan_checker(RCM_PC, counter);
       Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-      transferred_point = get_Transform(registration_inv, RCM);
-      points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+      transferred_point = get_Transform(registration_inv, RCM_PC);
+      // points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
       myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
     }
   }
@@ -887,17 +886,17 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registr
   {
     AxialHeadTranslation -= min_seperation / 10;
 
-    for (k = -49.0; k >= -98.0; k -= 1.0)
+    for (k = -49.0; k >= -98.0; k += -49 / 10)
     {
       LateralTranslation = k;
 
-      RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
-                                     LateralTranslation, ProbeInsertion,
-                                     ProbeRotation, PitchRotation, YawRotation);
-      nan_checker(RCM, counter);
+      RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                        LateralTranslation, ProbeInsertion,
+                                        ProbeRotation, PitchRotation, YawRotation);
+      nan_checker(RCM_PC, counter);
       Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-      transferred_point = get_Transform(registration_inv, RCM);
-      points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+      transferred_point = get_Transform(registration_inv, RCM_PC);
+      // points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
       myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
     }
   }
@@ -917,26 +916,25 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registr
     {
       AxialHeadTranslation += min_travel / 10;
       AxialFeetTranslation += min_travel / 10;
-      for (k = -49.0; k >= -98.0; k -= 49.0)
+      for (k = -49.0; k >= -49 * 2; k += -49)
       {
         LateralTranslation = k;
-        RCM = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
-                                       LateralTranslation, ProbeInsertion,
-                                       ProbeRotation, PitchRotation, YawRotation);
-        nan_checker(RCM, counter);
+        RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
+                                          LateralTranslation, ProbeInsertion,
+                                          ProbeRotation, PitchRotation, YawRotation);
+        nan_checker(RCM_PC, counter);
         Eigen::Vector4d transferred_point(0.0, 0.0, 0.0, 1.0);
-        transferred_point = get_Transform(registration_inv, RCM);
-        points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
+        transferred_point = get_Transform(registration_inv, RCM_PC);
+        // points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
         myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       }
     }
     AxialFeetTranslation = -3;
     AxialHeadTranslation = 0;
-    LateralTranslation = 0;
   }
-  std::cout << "# of points: " << points->GetNumberOfPoints();
+  // std::cout << "# of points: " << points->GetNumberOfPoints();
   myout.close();
-  return points;
+  return 0;
 }
 vtkSmartPointer<vtkPoints> ForwardKinematics::get_Sub_Workspace(Eigen::Matrix4d registration, Eigen::Vector4d entryPointScanner)
 {
