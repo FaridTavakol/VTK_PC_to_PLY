@@ -918,7 +918,7 @@ int ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
     {
       AxialHeadTranslation += min_travel / division;
       AxialFeetTranslation += min_travel / division;
-      for (k = -49.0; k >= -49 * 2; k += -49)
+      for (k = lateral_start; k >= lateral_start * 2; k += lateral_start / division_k)
       {
         LateralTranslation = k;
         RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
