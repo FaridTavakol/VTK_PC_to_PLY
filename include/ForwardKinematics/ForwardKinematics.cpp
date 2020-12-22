@@ -788,9 +788,11 @@ int ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
      =============================================RCM computation============================================
       ==================================================================================================*/
 
-  double min_seperation{71}; //71
-  const double division{100};
-  const double Abs_min_leg_separation{68};
+  double min_seperation{71};               //71
+  const double division{100};              //100
+  const double division_k{20};             //20
+  const double lateral_start{-49};         //-49
+  const double Abs_min_leg_separation{68}; //68
   // Loop for visualizing the top
   ++counter;
   AxialFeetTranslation = 68;
@@ -800,7 +802,7 @@ int ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
   {
     AxialHeadTranslation += Top_max_travel / division;
     AxialFeetTranslation += Top_max_travel / division;
-    for (k = -49.0; k >= -98.0; k += -49 / 10) // max lateral movement 0.0 ~ -49.47 (appx = -49)
+    for (k = lateral_start; k >= lateral_start * 2; k += lateral_start / division_k) // max lateral movement 0.0 ~ -49.47 (appx = -49)
     {
       LateralTranslation = k;
       RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
@@ -823,7 +825,7 @@ int ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
   {
     if (i == 0) // for the beginning row
     {
-      for (k = -49.0; k >= -98.0; k += -49 / 10)
+      for (k = lateral_start; k >= lateral_start * 2; k += lateral_start / division_k)
       {
         LateralTranslation = k;
         RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
@@ -840,7 +842,7 @@ int ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
     {
       AxialHeadTranslation += max_travel_bottom / division;
       AxialFeetTranslation += max_travel_bottom / division;
-      for (k = -49.0; k >= -98.0; k += -49 / 10)
+      for (k = lateral_start; k >= lateral_start * 2; k += lateral_start / division_k)
       {
         LateralTranslation = k;
         RCM_PC = NeuroKinematics_.get_RCM(AxialHeadTranslation, AxialFeetTranslation,
@@ -859,11 +861,11 @@ int ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
 
   // Loop for creating the head face
   ++counter;
-  for (j = 7.1; j <= 71; j += 7.1)
+  for (j = min_seperation / division; j <= min_seperation; j += min_seperation / division)
   {
-    AxialFeetTranslation += 7.1;
+    AxialFeetTranslation += min_seperation / division;
 
-    for (k = -49.0; k >= -98.0; k += -49 / 10)
+    for (k = lateral_start; k >= lateral_start * 2; k += lateral_start / division_k)
     {
       LateralTranslation = k;
 
@@ -882,11 +884,11 @@ int ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
 
   // Loop for creating the feet face
   ++counter;
-  for (j = min_seperation / 10; j <= min_seperation; j += min_seperation / 10)
+  for (j = min_seperation / division; j <= min_seperation; j += min_seperation / division)
   {
-    AxialHeadTranslation -= min_seperation / 10;
+    AxialHeadTranslation -= min_seperation / division;
 
-    for (k = -49.0; k >= -98.0; k += -49 / 10)
+    for (k = lateral_start; k >= lateral_start * 2; k += lateral_start / division_k)
     {
       LateralTranslation = k;
 
@@ -907,15 +909,15 @@ int ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
   AxialHeadTranslation = 0;
   double min_travel{-86};  // The max that the robot can move in z direction when at lowest height (at each hight min travel is changed)
   double max_travel{-157}; //157 The max that the robot can move in z direction when at highest height
-  for (j = min_seperation / 10; j <= Abs_min_leg_separation; j += min_seperation / 10)
+  for (j = min_seperation / division; j <= Abs_min_leg_separation; j += min_seperation / division)
   {
-    AxialFeetTranslation += j;         // For each loop it will lift the base by a constant value
-    min_travel -= min_seperation / 10; // Takes care of the amount of Axial travel for the Axial head and feet
+    AxialFeetTranslation += j;               // For each loop it will lift the base by a constant value
+    min_travel -= min_seperation / division; // Takes care of the amount of Axial travel for the Axial head and feet
 
-    for (ii = 0; ii > min_travel + 1 && min_travel >= max_travel; ii += min_travel / 10) // loop to move the base from Head to feet based on the allowable max movement range (min_travel)
+    for (ii = 0; ii > min_travel + 1 && min_travel >= max_travel; ii += min_travel / division) // loop to move the base from Head to feet based on the allowable max movement range (min_travel)
     {
-      AxialHeadTranslation += min_travel / 10;
-      AxialFeetTranslation += min_travel / 10;
+      AxialHeadTranslation += min_travel / division;
+      AxialFeetTranslation += min_travel / division;
       for (k = -49.0; k >= -49 * 2; k += -49)
       {
         LateralTranslation = k;
