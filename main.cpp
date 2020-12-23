@@ -96,6 +96,7 @@ int main(int argc, char *argv[])
     std::cout << "Writing " << filename_RCM_workspace_ply << std::endl;
     plyWriter_RCM_Workspace->Write();
 
-    // Testing the RCM_PC method
-    ForwardKinematics_.get_RCM_PC(registration);
+    // Creating the RCM Point Cloud for sub-workspace calculation
+    Eigen::Matrix3Xf RCM_PC;
+    RCM_PC = ForwardKinematics_.get_RCM_PC(registration);
 }
