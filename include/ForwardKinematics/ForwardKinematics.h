@@ -45,4 +45,5 @@ public:
     void calc_Transform(Eigen::Matrix4d registration_inv, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Vector3d &EP_inRobotCoordinate);
     void store_Point(Eigen::Matrix3Xf &RCM_Point_cloud, Eigen::Vector4d &transferred_Point, int counter);
     bool check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen::Vector3f RCM_point, Probe probe_init);
+    Eigen::Matrix3Xf check_PointCloud_IK(Eigen::Matrix4d registration);
 };

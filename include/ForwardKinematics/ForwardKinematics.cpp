@@ -1049,6 +1049,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_Sub_Workspace_old(Eigen::Matri
 //Method to check for RCM points that are within the reach of the entry point
 Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Matrix4d registration, Probe probe_init)
 {
+  ofstream myout("Validated_workspace.xyz");
   // number of columns of the RCM PC
   int no_cols_RCM_PC = RCM_PC.cols();
 
@@ -1084,9 +1085,12 @@ Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Ei
       Validated_PC(0, no_of_cols_validated_pts) = RCM_Point_to_Check(0);
       Validated_PC(1, no_of_cols_validated_pts) = RCM_Point_to_Check(1);
       Validated_PC(2, no_of_cols_validated_pts) = RCM_Point_to_Check(2);
+      myout << RCM_Point_to_Check(0) << " " << RCM_Point_to_Check(1) << " " << RCM_Point_to_Check(2) << " 0.00 0.00 0.00" << endl;
+
       no_of_cols_validated_pts++;
     }
   }
+  myout.close();
   return Validated_PC;
 }
 
@@ -1189,4 +1193,9 @@ bool ForwardKinematics::check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen
   {
     return 0;
   }
+}
+
+// Method to Check the IK for the Validated point set
+Eigen::Matrix3Xf ForwardKinematics::check_PointCloud_IK(Eigen::Matrix4d registration)
+{
 }

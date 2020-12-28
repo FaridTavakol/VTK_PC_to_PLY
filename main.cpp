@@ -101,6 +101,6 @@ int main(int argc, char *argv[])
     RCM_PC = ForwardKinematics_.get_RCM_PC(registration);
 
     // Test get_SubWorkspace method
-    Eigen::Vector3d EP_inImagerCoordinate(-67.2, 200.0, 85.0);
+    Eigen::Vector3d EP_inImagerCoordinate(-100.2, 250, 85.0);
     Eigen::Matrix3Xf test = ForwardKinematics_.get_SubWorkspace(RCM_PC, EP_inImagerCoordinate, registration, probe_init);
 }
