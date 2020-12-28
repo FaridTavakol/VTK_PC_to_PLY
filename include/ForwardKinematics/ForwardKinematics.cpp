@@ -760,7 +760,8 @@ Eigen::Matrix3Xf ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
      =============================================RCM computation============================================
       ==================================================================================================*/
 
-  // Initializing a 3 X 164,842 Eigen matrix to store the RCM point cloud coordinates
+  // Initializing a 3 X 197,779 Eigen matrix to store the RCM point cloud.
+  // Change the col length if the courseness of the PC is changed. The value for this length is printed upon running this method.
   Eigen::Matrix3Xf Point_cloud(3, 197779);
 
   double min_seperation{71};               //71
@@ -789,7 +790,6 @@ Eigen::Matrix3Xf ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
       // points->InsertNextPoint(transferred_point(0), transferred_point(1), transferred_point(2));
       myout << transferred_point(0) << " " << transferred_point(1) << " " << transferred_point(2) << " 0.00 0.00 0.00" << endl;
       store_Point(Point_cloud, transferred_point, counter);
-      std::cout << "counter" << counter << std::endl;
       ++counter;
     }
   }
@@ -916,7 +916,7 @@ Eigen::Matrix3Xf ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
   return Point_cloud;
 }
 
-vtkSmartPointer<vtkPoints> ForwardKinematics::get_Sub_Workspace(Eigen::Matrix4d registration, Eigen::Vector4d entryPointScanner)
+vtkSmartPointer<vtkPoints> ForwardKinematics::get_Sub_Workspace_old(Eigen::Matrix4d registration, Eigen::Vector4d entryPointScanner)
 {
   // Create points.
   vtkSmartPointer<vtkPoints> points_RCM = vtkSmartPointer<vtkPoints>::New();
@@ -1046,6 +1046,50 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_Sub_Workspace(Eigen::Matrix4d 
   return points_RCM;
 }
 
+//Method to check for RCM points that are within the reach of the entry point
+Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Matrix4d registration, Probe probe_init)
+{
+  // number of columns of the RCM PC
+  int no_cols_RCM_PC = RCM_PC.cols();
+
+  // calculate the transformation from the robot to the the entry point
+  Eigen::Matrix4d registration_inv = registration.inverse();
+  Eigen::Vector3d EP_inRobotCoordinate(0.0, 0.0, 0.0);
+  // Finds the location of the EP W.R.T the robot base
+  calc_Transform(registration_inv, EP_inImagerCoordinate, EP_inRobotCoordinate);
+
+  // Step to check individual points in the RCM Point cloud
+  int no_of_cols_validated_pts{0};
+
+  //loop to go through each RCM points and check for the validity of them W.R.T the EP
+  for (int i = 0; i < no_cols_RCM_PC; i++)
+  {
+    Eigen::Vector3f RCM_Point_to_Check(RCM_PC(0, i), RCM_PC(1, i), RCM_PC(2, i));
+    if (check_Sphere(EP_inRobotCoordinate, RCM_Point_to_Check, probe_init) == 1)
+    {
+      no_of_cols_validated_pts++;
+    }
+  }
+
+  Eigen::Matrix3Xf Validated_PC(3, no_of_cols_validated_pts); // Matrix to store the validated points in
+  std::cout << "Number of columns of the Validate PC " << Validated_PC.cols() << std::endl;
+
+  no_of_cols_validated_pts = 0;
+
+  for (i = 0; i < no_cols_RCM_PC; i++)
+  {
+    Eigen::Vector3f RCM_Point_to_Check(RCM_PC(0, i), RCM_PC(1, i), RCM_PC(2, i));
+    if (check_Sphere(EP_inRobotCoordinate, RCM_Point_to_Check, probe_init) == 1)
+    {
+      Validated_PC(0, no_of_cols_validated_pts) = RCM_Point_to_Check(0);
+      Validated_PC(1, no_of_cols_validated_pts) = RCM_Point_to_Check(1);
+      Validated_PC(2, no_of_cols_validated_pts) = RCM_Point_to_Check(2);
+      no_of_cols_validated_pts++;
+    }
+  }
+  return Validated_PC;
+}
+
 // Method to search for NaN values in the FK output
 void ForwardKinematics::nan_checker(Neuro_FK_outputs FK, int &counter)
 {
@@ -1109,4 +1153,40 @@ void ForwardKinematics::store_Point(Eigen::Matrix3Xf &RCM_Point_cloud, Eigen::Ve
   RCM_Point_cloud(0, counter) = transferred_Point(0);
   RCM_Point_cloud(1, counter) = transferred_Point(1);
   RCM_Point_cloud(2, counter) = transferred_Point(2);
+}
+
+void ForwardKinematics::calc_Transform(Eigen::Matrix4d registration_inv, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Vector3d &EP_inRobotCoordinate)
+{
+  Eigen::Vector4d EP_R(EP_inRobotCoordinate(0), EP_inRobotCoordinate(1), EP_inRobotCoordinate(2), 1);    // Creating a standard vector for matrix multiplication
+  Eigen::Vector4d EP_I(EP_inImagerCoordinate(0), EP_inImagerCoordinate(1), EP_inImagerCoordinate(2), 1); // Creating a standard vector for matrix multiplication
+  //Finding the location of the EP W.R.T Robot's base frame
+  EP_R = registration_inv * EP_I;
+
+  //rounding step (to the tenth)
+  for (int t = 0; t < 3; t++)
+  {
+    EP_R(t) = round(EP_R(t) * 10) / 10;
+    EP_inRobotCoordinate(t) = EP_R(t);
+  }
+}
+
+// Method to check if the Entry point is within the bounds of a given RCM point
+bool ForwardKinematics::check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen::Vector3f RCM_point, Probe probe_init)
+{
+  /*Whether a point lies inside a sphere or not, depends upon its distance from the centre.
+  A point (x, y, z) is inside the sphere with center (cx, cy, cz) and radius r if
+  ( x-cx ) ^2 + (y-cy) ^2 + (z-cz) ^ 2 < r^2 */
+  float B_value = probe_init._robotToEntry;
+  const float radius = 72.5; // RCM offset from Robot to RCM point
+
+  float distance{0};
+  distance = pow(EP_inRobotCoordinate(0) - RCM_point(0), 2) + pow(EP_inRobotCoordinate(1) - RCM_point(1), 2) + pow(EP_inRobotCoordinate(2) - RCM_point(2), 2);
+  if (distance <= pow(radius, 2)) // EP is within the Sphere
+  {
+    return 1;
+  }
+  else // EP is outside of the Sphere
+  {
+    return 0;
+  }
 }

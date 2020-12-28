@@ -38,8 +38,11 @@ public:
     vtkSmartPointer<vtkPoints> get_General_Workspace(Eigen::Matrix4d registration, vtkSmartPointer<vtkPoints> points);
     vtkSmartPointer<vtkPoints> get_RCM_Workspace(Eigen::Matrix4d registration, vtkSmartPointer<vtkPoints> points);
     Eigen::Matrix3Xf get_RCM_PC(Eigen::Matrix4d registration);
-    vtkSmartPointer<vtkPoints> get_Sub_Workspace(Eigen::Matrix4d registration, Eigen::Vector4d entryPointScanner);
+    vtkSmartPointer<vtkPoints> get_Sub_Workspace_old(Eigen::Matrix4d registration, Eigen::Vector4d entryPointScanner);
+    Eigen::Matrix3Xf get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Matrix4d registration, Probe probe_init);
     void nan_checker(Neuro_FK_outputs FK, int &counter);
     Eigen::Vector4d get_Transform(Eigen::Matrix4d registration_inv, Neuro_FK_outputs FK);
+    void calc_Transform(Eigen::Matrix4d registration_inv, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Vector3d &EP_inRobotCoordinate);
     void store_Point(Eigen::Matrix3Xf &RCM_Point_cloud, Eigen::Vector4d &transferred_Point, int counter);
+    bool check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen::Vector3f RCM_point, Probe probe_init);
 };
