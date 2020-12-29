@@ -131,19 +131,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named IK_Solver
-
-# Build rule for target.
-IK_Solver: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 IK_Solver
-.PHONY : IK_Solver
-
-# fast build rule for target.
-IK_Solver/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IK_Solver.dir/build.make CMakeFiles/IK_Solver.dir/build
-.PHONY : IK_Solver/fast
-
-#=============================================================================
 # Target rules for targets named ForwardKinematics
 
 # Build rule for target.
@@ -168,33 +155,6 @@ NeuroKinematics: cmake_check_build_system
 NeuroKinematics/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/NeuroKinematics.dir/build.make CMakeFiles/NeuroKinematics.dir/build
 .PHONY : NeuroKinematics/fast
-
-IK_Solver.o: IK_Solver.cpp.o
-
-.PHONY : IK_Solver.o
-
-# target to build an object file
-IK_Solver.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IK_Solver.dir/build.make CMakeFiles/IK_Solver.dir/IK_Solver.cpp.o
-.PHONY : IK_Solver.cpp.o
-
-IK_Solver.i: IK_Solver.cpp.i
-
-.PHONY : IK_Solver.i
-
-# target to preprocess a source file
-IK_Solver.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IK_Solver.dir/build.make CMakeFiles/IK_Solver.dir/IK_Solver.cpp.i
-.PHONY : IK_Solver.cpp.i
-
-IK_Solver.s: IK_Solver.cpp.s
-
-.PHONY : IK_Solver.s
-
-# target to generate assembly for a file
-IK_Solver.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IK_Solver.dir/build.make CMakeFiles/IK_Solver.dir/IK_Solver.cpp.s
-.PHONY : IK_Solver.cpp.s
 
 NeuroKinematics/NeuroKinematics.o: NeuroKinematics/NeuroKinematics.cpp.o
 
@@ -289,11 +249,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ForwardKinematics"
-	@echo "... IK_Solver"
 	@echo "... NeuroKinematics"
-	@echo "... IK_Solver.o"
-	@echo "... IK_Solver.i"
-	@echo "... IK_Solver.s"
 	@echo "... NeuroKinematics/NeuroKinematics.o"
 	@echo "... NeuroKinematics/NeuroKinematics.i"
 	@echo "... NeuroKinematics/NeuroKinematics.s"

@@ -38,7 +38,6 @@ ForwardKinematics::ForwardKinematics(NeuroKinematics &NeuroKinematics) : Diff(68
   ProbeRotation = 0.0;
 
   NeuroKinematics_ = NeuroKinematics;
-  std::cout << "Constructor Called\n";
 }
 
 vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matrix4d registration, vtkSmartPointer<vtkPoints> points)
@@ -1047,7 +1046,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_Sub_Workspace_old(Eigen::Matri
 }
 
 //Method to check for RCM points that are within the reach of the entry point
-Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Matrix4d registration, Probe probe_init)
+Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Matrix4d registration, double probe_init)
 {
   ofstream myout("Validated_workspace.xyz");
   // number of columns of the RCM PC
@@ -1090,6 +1089,7 @@ Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Ei
       no_of_cols_validated_pts++;
     }
   }
+  check_PointCloud_IK(Validated_PC, EP_inRobotCoordinate);
   myout.close();
   return Validated_PC;
 }
@@ -1175,12 +1175,12 @@ void ForwardKinematics::calc_Transform(Eigen::Matrix4d registration_inv, Eigen::
 }
 
 // Method to check if the Entry point is within the bounds of a given RCM point
-bool ForwardKinematics::check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen::Vector3f RCM_point, Probe probe_init)
+bool ForwardKinematics::check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen::Vector3f RCM_point, double probe_init)
 {
   /*Whether a point lies inside a sphere or not, depends upon its distance from the centre.
   A point (x, y, z) is inside the sphere with center (cx, cy, cz) and radius r if
   ( x-cx ) ^2 + (y-cy) ^2 + (z-cz) ^ 2 < r^2 */
-  float B_value = probe_init._robotToEntry;
+  float B_value = probe_init;
   const float radius = 72.5; // RCM offset from Robot to RCM point
 
   float distance{0};
@@ -1196,6 +1196,52 @@ bool ForwardKinematics::check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen
 }
 
 // Method to Check the IK for the Validated point set
-Eigen::Matrix3Xf ForwardKinematics::check_PointCloud_IK(Eigen::Matrix4d registration)
+Eigen::Matrix3Xf ForwardKinematics::check_PointCloud_IK(Eigen::Matrix3Xf Validated_PC, Eigen::Vector3d EP_inRobotCoordinate)
 {
+  // float B_value = NeuroKinematics_._probe->_robotToEntry; // B value
+  int no_cols = Validated_PC.cols();
+  // Check for validity Using Inverse Kinematics Method
+  Eigen::Vector4d EP_R(EP_inRobotCoordinate(0), EP_inRobotCoordinate(1), EP_inRobotCoordinate(2), 1);
+  Eigen::Vector4d TP_R(0, 0, 0, 1);
+  double min_Axial_separation = 75;
+  double max_Axial_separation = 146;
+  double max_Lateral_translation = -49;
+  double min_Lateral_translation = -98;
+  double max_AxialHead_translation = 0;
+  double min_AxialHead_translation = -146; // it may be -145
+  double max_AxialFeet_translation = 68;
+  double min_AxialFeet_translation = -78;
+  double max_Pitch_rotation = +26.0 * pi / 180;
+  double min_Pitch_rotation = -37.0 * pi / 180;
+  double max_Yaw_rotation = 0.0;
+  double min_Yaw_rotation = -88.0 * pi / 180;
+  double min_Probe_insertion = -50;
+  double max_Probe_insertion = 0;
+  ; //
+
+  double Axial_Seperation{0};
+  for (int i = 0; i < no_cols; i++)
+  {
+    TP_R << Validated_PC(0, i), Validated_PC(1, i), Validated_PC(2, i), 1;
+
+    Neuro_IK_outputs IK_output = NeuroKinematics_.IK_solver(EP_R, TP_R);
+    Axial_Seperation = IK_output.AxialHeadTranslation - IK_output.AxialFeetTranslation;
+    std::cout << "\nAxialFeetTranslation " << IK_output.AxialFeetTranslation;
+    std::cout << "\nAxialHeadTranslation " << IK_output.AxialHeadTranslation;
+    std::cout << "\nYaw " << IK_output.YawRotation;
+    std::cout << "\nPitch " << IK_output.PitchRotation;
+    std::cout << "\nPI " << IK_output.ProbeInsertion << std::endl;
+    // if (Axial_Seperation > max_Axial_Separation)
+    // {
+    //   continue;
+    // }
+    // if (Axial_Seperation < min_Axial_Separation)
+    // {
+    //   continue;
+    // }
+    // if (< min_Axial_Separation)
+    // {
+    //   continue;
+    // }
+  }
 }

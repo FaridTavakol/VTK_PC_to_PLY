@@ -36,13 +36,13 @@ message (STATUS "VTK_VERSION: ${VTK_VERSION}")
 
 # include all components
 add_executable(ForwardKinematics MACOSX_BUNDLE main.cpp include/ForwardKinematics/ForwardKinematics.cpp)
-add_executable(IK_Solver MACOSX_BUNDLE IK_Solver.cpp )
+# add_executable(IK_Solver MACOSX_BUNDLE IK_Solver.cpp )
 target_link_libraries(ForwardKinematics PRIVATE ${VTK_LIBRARIES} NeuroKinematics)
 target_link_libraries(NeuroKinematics PRIVATE ${VTK_LIBRARIES} )
 
-target_link_libraries(IK_Solver PRIVATE ${VTK_LIBRARIES} NeuroKinematics)
+# target_link_libraries(IK_Solver PRIVATE ${VTK_LIBRARIES} NeuroKinematics)
 # vtk_module_autoinit is needed
 vtk_module_autoinit(
-  TARGETS ForwardKinematics IK_Solver
+  TARGETS ForwardKinematics
   MODULES ${VTK_LIBRARIES})
 

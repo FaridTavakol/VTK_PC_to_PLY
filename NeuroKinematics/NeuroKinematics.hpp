@@ -24,7 +24,6 @@
 struct Neuro_FK_outputs
 {
   Eigen::Matrix4d zFrameToTreatment;
-  
 };
 
 struct Neuro_IK_outputs
@@ -99,7 +98,7 @@ public:
 
   Neuro_IK_outputs InverseKinematics(Eigen::Vector4d entryPointzFrame, Eigen::Vector4d targetPointzFrame);
   // IK Method for calculation of the cartesian base based on a given Entry point
-  IK_Solver_outputs IK_solver(Eigen::Vector4d entryPointzFrame);
+  Neuro_IK_outputs IK_solver(Eigen::Vector4d EntryPoint, Eigen::Vector4d TargetPoint);
 };
 
 #endif /* NEUROKINEMATICS_HPP_ */

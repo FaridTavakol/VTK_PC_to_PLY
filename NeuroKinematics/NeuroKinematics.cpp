@@ -219,12 +219,27 @@ Neuro_IK_outputs NeuroKinematics::InverseKinematics(Eigen::Vector4d entryPointzF
 	return IK;
 }
 // Entry point IK calculation
-IK_Solver_outputs NeuroKinematics::IK_solver(Eigen::Vector4d entryPointzFrame)
+Neuro_IK_outputs NeuroKinematics::IK_solver(Eigen::Vector4d EntryPoint, Eigen::Vector4d TargetPoint)
 {
-	IK_Solver_outputs IK;
+	/* In this method the target point is going to be the the RCM point. The IK solver will try to find
+	the values for lateral and Axial feet and Axial head translation that would result in the placement
+	of the RCM on the given TP. The Yaw and Pitch values will be similar to the General InverseKinematics
+	method. 
+	*/
+	Neuro_IK_outputs IK;
 	double AxialHeadTranslation{}, AxialFeetTranslation{}, LateralTranslation{}, yTrapezoidHypotenuseSquared{}, axialTrapezoidMidpoint{};
 	double yTrapezoidSideSquared{}, yTrapezoidInitialSeparationSquared{};
 	double zDeltaRCM{}, xDeltaRCM{}, yDeltaRCM{};
+	// Get the entry point with respect to the orientation of the zFrame
+	Eigen::Vector4d rcmToEntry = _zFrameToRCM.inverse() * EntryPoint;
+
+	// Get the target point with respect to the orientation of the zFrame
+	Eigen::Vector4d rcmToTarget = _zFrameToRCM.inverse() * TargetPoint;
+
+	// The yaw and pitch components of the robot rely solely on the entry point's location with respect to the target point
+	// This calculation is done with respect to the RCM Orientation
+	IK.YawRotation = (3.1415 / 2) + atan2(rcmToEntry(2) - rcmToTarget(2), rcmToEntry(1) - rcmToTarget(1));
+	IK.PitchRotation = atan((rcmToEntry(0) - rcmToTarget(0)) / (rcmToEntry(2) - rcmToTarget(2)));
 	// for the calculation of A * x = B, -->  x = inv(A) * B;
 	Eigen::Vector2d x;
 	Eigen::Matrix2d A;
@@ -233,9 +248,9 @@ IK_Solver_outputs NeuroKinematics::IK_solver(Eigen::Vector4d entryPointzFrame)
 
 	Eigen::Vector2d B;
 
-	xDeltaRCM = entryPointzFrame(0) - _xInitialRCM; // finding the delta values
-	yDeltaRCM = entryPointzFrame(1) - _yInitialRCM;
-	zDeltaRCM = entryPointzFrame(2) - _zInitialRCM;
+	xDeltaRCM = TargetPoint(0) - _xInitialRCM; // finding the delta values
+	yDeltaRCM = TargetPoint(1) - _yInitialRCM;
+	zDeltaRCM = TargetPoint(2) - _zInitialRCM;
 
 	yTrapezoidHypotenuseSquared = pow(_lengthOfAxialTrapezoidSideLink, 2);
 	yTrapezoidInitialSeparationSquared = pow((_initialAxialSeperation - _widthTrapezoidTop) / 2, 2);

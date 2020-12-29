@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
 {
     NeuroKinematics NeuroKinematics_(&probe_init);
     ForwardKinematics ForwardKinematics_(NeuroKinematics_);
+    // ForwardKinematics_.NeuroKinematics_._probe->_robotToEntry
     // General workspace computation
     // 4x4 Registration matrix
     // just a test case, use X= -53, Y= -119, Z= -121
@@ -102,5 +103,14 @@ int main(int argc, char *argv[])
 
     // Test get_SubWorkspace method
     Eigen::Vector3d EP_inImagerCoordinate(-100.2, 250, 85.0);
-    Eigen::Matrix3Xf test = ForwardKinematics_.get_SubWorkspace(RCM_PC, EP_inImagerCoordinate, registration, probe_init);
+    // Eigen::Matrix3Xf test = ForwardKinematics_.get_SubWorkspace(RCM_PC, EP_inImagerCoordinate, registration, NeuroKinematics_._probe->_robotToEntry);
+    Eigen::Vector4d EP(-41.3508, 238.923, 37.0847, 1);
+    Eigen::Vector4d TP(-46.68, 209.263, 27.91, 1);
+    Neuro_IK_outputs IK_output = ForwardKinematics_.NeuroKinematics_.IK_solver(EP, TP);
+    std::cout << "\nAxialFeetTranslation " << IK_output.AxialFeetTranslation;
+    std::cout << "\nAxialHeadTranslation " << IK_output.AxialHeadTranslation;
+    std::cout << "\nLateralTranslation " << IK_output.LateralTranslation;
+    std::cout << "\nYaw " << IK_output.YawRotation;
+    std::cout << "\nPitch " << IK_output.PitchRotation << std::endl;
+    // std::cout << "\nPI " << IK_output.ProbeInsertion;
 }
