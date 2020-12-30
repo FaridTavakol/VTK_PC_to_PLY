@@ -9,6 +9,7 @@ using std::ofstream;
 // Creating an object called Forward for FK
 // In the neuroRobot.cpp the specs for the  probe are: 0,0,5,41
 
+// Constructor
 ForwardKinematics::ForwardKinematics(NeuroKinematics &NeuroKinematics) : Diff(68), pi(3.141)
 {
   //counters
@@ -40,6 +41,7 @@ ForwardKinematics::ForwardKinematics(NeuroKinematics &NeuroKinematics) : Diff(68
   NeuroKinematics_ = NeuroKinematics;
 }
 
+// Method to Create the surface mesh for General reachable Workspace visualization
 vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matrix4d registration, vtkSmartPointer<vtkPoints> points)
 {
   // To visualize the transferred points in the slicer without using the Transform Module
@@ -577,6 +579,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_General_Workspace(Eigen::Matri
   return points;
 }
 
+// Method to Create the RCM surface mesh for RCM visualization
 vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_Workspace(Eigen::Matrix4d registration, vtkSmartPointer<vtkPoints> points)
 {
   // To visualize the transferred points in the slicer without using the Transform Module
@@ -743,6 +746,7 @@ vtkSmartPointer<vtkPoints> ForwardKinematics::get_RCM_Workspace(Eigen::Matrix4d 
   return points;
 }
 
+// Method to Create the RCM Point Cloud for Sub-Workspace visualization
 Eigen::Matrix3Xf ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
 { // To visualize the transferred points in the slicer without using the Transform Module
   Eigen::Matrix4d registration_inv = registration.inverse();
@@ -915,139 +919,10 @@ Eigen::Matrix3Xf ForwardKinematics::get_RCM_PC(Eigen::Matrix4d registration)
   return Point_cloud;
 }
 
-vtkSmartPointer<vtkPoints> ForwardKinematics::get_Sub_Workspace_old(Eigen::Matrix4d registration, Eigen::Vector4d entryPointScanner)
-{
-  // Create points.
-  vtkSmartPointer<vtkPoints> points_RCM = vtkSmartPointer<vtkPoints>::New();
-  // Object containing the 4x4 transformation matrix
-  Neuro_FK_outputs FK{};
-  //----------------------------------FK computation --------------------------------------------------------
-  AxialHeadTranslation = 0.0;
-  AxialFeetTranslation = 0.0;
-  LateralTranslation = 0.0;
-  PitchRotation = 0.0;
-  YawRotation = 0.0;
-  ProbeInsertion = 31.5;
-  ProbeRotation = 0.0;
-  // loop for visualizing the bottom
-  double i{}, j{}, k{}, l{};                     // initializing the counters
-  for (i = 0, j = 0; i < 87; i += 8.6, j += 8.6) //75
-  {
-    AxialFeetTranslation = i;
-    AxialHeadTranslation = j;
-    for (k = 0; k <= 37.5; k += 7.5)
-    {
-      LateralTranslation = k;
-      FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                              LateralTranslation, ProbeInsertion,
-                                              ProbeRotation, PitchRotation, YawRotation);
-      points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
-    }
-  }
-
-  // Loop for visualizing the top
-  for (i = 0, j = -71; i < 157; i += 6, j += 6) //75
-  {
-    AxialFeetTranslation = i;
-    AxialHeadTranslation = j;
-    for (k = 0; k <= 37.5; k += 7.5)
-    {
-      LateralTranslation = k;
-      FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                              LateralTranslation, ProbeInsertion,
-                                              ProbeRotation, PitchRotation, YawRotation);
-      points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
-    }
-  }
-  const double Diff{71};
-  AxialFeetTranslation = 0;
-  AxialHeadTranslation = 0;
-
-  int nan_checker_row{};
-  int nan_checker_col{};
-  i = 0;
-  j = -1;
-  k = 0;
-  // Loop for creating the feet face
-  for (j = -1; Diff > abs(AxialHeadTranslation - AxialFeetTranslation); --j)
-  {
-    AxialHeadTranslation = j;
-    for (k = 0; k <= 37.5; k += 7.5)
-    {
-      LateralTranslation = k;
-      FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                              LateralTranslation, ProbeInsertion,
-                                              ProbeRotation, PitchRotation, YawRotation);
-      points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
-    }
-  }
-
-  // Loop for creating the Head face
-  AxialHeadTranslation = 86;
-  AxialFeetTranslation = 86;
-  nan_checker_row = 0;
-  nan_checker_col = 0;
-  i = 86;
-  j = 86;
-  k = 0;
-
-  for (i = 87; Diff > abs(AxialHeadTranslation - AxialFeetTranslation); i += 2)
-  {
-    AxialFeetTranslation = i;
-    for (k = 0; k <= 37.5; k += 7.5)
-    {
-      LateralTranslation = k;
-      FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                              LateralTranslation, ProbeInsertion,
-                                              ProbeRotation, PitchRotation, YawRotation);
-      points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
-    }
-  }
-
-  //loop for creating the sides
-  AxialFeetTranslation = 0;
-  AxialHeadTranslation = 0;
-  LateralTranslation = 0;
-  nan_checker_row = 0;
-  nan_checker_col = 0;
-  i = 0;
-  j = -1;
-  k = 0;
-
-  // double jj{};
-  double min_travel{86};
-  double max_travel{200};
-  // double Old_AxialHeadTranslation{};
-  for (j = -1; Diff > abs(j); --j)
-  {
-    AxialHeadTranslation = j;
-    ++min_travel;
-
-    for (ii = 0; ii <= min_travel && min_travel <= max_travel; ii += +4)
-    {
-      AxialHeadTranslation += 4;
-      AxialFeetTranslation += 4;
-
-      for (k = 0; k <= 37.5; k += 37.5)
-      {
-        LateralTranslation = k;
-        FK = NeuroKinematics_.ForwardKinematics(AxialHeadTranslation, AxialFeetTranslation,
-                                                LateralTranslation, ProbeInsertion,
-                                                ProbeRotation, PitchRotation, YawRotation);
-        points_RCM->InsertNextPoint(FK.zFrameToTreatment(0, 3), FK.zFrameToTreatment(1, 3), FK.zFrameToTreatment(2, 3));
-      }
-    }
-    AxialHeadTranslation = 0;
-    AxialFeetTranslation = 0;
-    LateralTranslation = 0;
-  }
-
-  return points_RCM;
-}
-
 //Method to check for RCM points that are within the reach of the entry point
 Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Matrix4d registration, double probe_init)
 {
+  // Creating the PC for the Validated RCM points that satisfy the distance criteria
   ofstream myout("Validated_workspace.xyz");
   // number of columns of the RCM PC
   int no_cols_RCM_PC = RCM_PC.cols();
@@ -1072,7 +947,7 @@ Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Ei
   }
 
   Eigen::Matrix3Xf Validated_PC(3, no_of_cols_validated_pts); // Matrix to store the validated points in
-  std::cout << "Number of columns of the Validate PC " << Validated_PC.cols() << std::endl;
+  std::cout << "Number of columns of the Validated PC " << Validated_PC.cols() << std::endl;
 
   no_of_cols_validated_pts = 0;
 
@@ -1089,6 +964,8 @@ Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Ei
       no_of_cols_validated_pts++;
     }
   }
+
+  // Step to check the Inverse Kinematics for each Validated RCM point
   check_PointCloud_IK(Validated_PC, EP_inRobotCoordinate);
   myout.close();
   return Validated_PC;
@@ -1128,6 +1005,7 @@ void ForwardKinematics::nan_checker(Neuro_FK_outputs FK, int &counter)
   }
 }
 
+// Method to calculate the transform for a point to be described in the Imager's Cooridnate frame. Will be deprecated since this is now done in the Slicer module.
 Eigen::Vector4d ForwardKinematics::get_Transform(Eigen::Matrix4d registration_inv, Neuro_FK_outputs FK)
 {
   //Vector that stores the End effector's position defined in the robot's Z-frame
@@ -1159,6 +1037,7 @@ void ForwardKinematics::store_Point(Eigen::Matrix3Xf &RCM_Point_cloud, Eigen::Ve
   RCM_Point_cloud(2, counter) = transferred_Point(2);
 }
 
+// Method which applis the transform to the given entry point defined in the Imager's coordinate frame to define it in the Robot's frame
 void ForwardKinematics::calc_Transform(Eigen::Matrix4d registration_inv, Eigen::Vector3d EP_inImagerCoordinate, Eigen::Vector3d &EP_inRobotCoordinate)
 {
   Eigen::Vector4d EP_R(EP_inRobotCoordinate(0), EP_inRobotCoordinate(1), EP_inRobotCoordinate(2), 1);    // Creating a standard vector for matrix multiplication
@@ -1198,50 +1077,89 @@ bool ForwardKinematics::check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen
 // Method to Check the IK for the Validated point set
 Eigen::Matrix3Xf ForwardKinematics::check_PointCloud_IK(Eigen::Matrix3Xf Validated_PC, Eigen::Vector3d EP_inRobotCoordinate)
 {
+  Eigen::Matrix3Xf Sub_Workspace_PC(3, 1);
+
+  int counter{0};
   // float B_value = NeuroKinematics_._probe->_robotToEntry; // B value
-  int no_cols = Validated_PC.cols();
-  // Check for validity Using Inverse Kinematics Method
+  int no_Cols_Validated_PC = Validated_PC.cols();
+
+  /* The methods checks for validity of the filtered workspace Using IK_solver Method. This Method takes
+  two Eigen Vectors of size 4 i.e (x,y,z,1). First argument is the EP and the second argument is the RCM point
+  which is considered as the TP.*/
+
+  // Initializing the vectors for EP and TP.
   Eigen::Vector4d EP_R(EP_inRobotCoordinate(0), EP_inRobotCoordinate(1), EP_inRobotCoordinate(2), 1);
   Eigen::Vector4d TP_R(0, 0, 0, 1);
-  double min_Axial_separation = 75;
-  double max_Axial_separation = 146;
-  double max_Lateral_translation = -49;
-  double min_Lateral_translation = -98;
-  double max_AxialHead_translation = 0;
-  double min_AxialHead_translation = -146; // it may be -145
-  double max_AxialFeet_translation = 68;
-  double min_AxialFeet_translation = -78;
-  double max_Pitch_rotation = +26.0 * pi / 180;
-  double min_Pitch_rotation = -37.0 * pi / 180;
-  double max_Yaw_rotation = 0.0;
-  double min_Yaw_rotation = -88.0 * pi / 180;
-  double min_Probe_insertion = -50;
-  double max_Probe_insertion = 0;
-  ; //
 
+  // Initializing the limits for each axis of the robot.
+  const double initial_Axial_separation = 143;
+  const double min_Axial_separation = 75;
+  const double max_Axial_separation = 146;
+  const double max_Lateral_translation = -49;
+  const double min_Lateral_translation = -98;
+  const double max_AxialHead_translation = 0;
+  const double min_AxialHead_translation = -146; // it may be -145
+  const double max_AxialFeet_translation = 68;
+  const double min_AxialFeet_translation = -78;
+  const double max_Pitch_rotation = +26.0 * pi / 180;
+  const double min_Pitch_rotation = -37.0 * pi / 180;
+  const double max_Yaw_rotation = 0.0;
+  const double min_Yaw_rotation = -88.0 * pi / 180;
+  const double min_Probe_insertion = 0;
+  const double max_Probe_insertion = 50;
   double Axial_Seperation{0};
-  for (int i = 0; i < no_cols; i++)
+  // Creating the object to store the output of the IK_Solver
+  Neuro_IK_outputs IK_output;
+
+  // Loop that goes through each point in the Validated PC and checks for the Validity of the IK output
+  for (int i = 0; i < no_Cols_Validated_PC; i++)
   {
+    // setting the TP for each point in the loop
     TP_R << Validated_PC(0, i), Validated_PC(1, i), Validated_PC(2, i), 1;
 
-    Neuro_IK_outputs IK_output = NeuroKinematics_.IK_solver(EP_R, TP_R);
-    Axial_Seperation = IK_output.AxialHeadTranslation - IK_output.AxialFeetTranslation;
-    std::cout << "\nAxialFeetTranslation " << IK_output.AxialFeetTranslation;
-    std::cout << "\nAxialHeadTranslation " << IK_output.AxialHeadTranslation;
-    std::cout << "\nYaw " << IK_output.YawRotation;
-    std::cout << "\nPitch " << IK_output.PitchRotation;
-    std::cout << "\nPI " << IK_output.ProbeInsertion << std::endl;
-    // if (Axial_Seperation > max_Axial_Separation)
-    // {
-    //   continue;
-    // }
-    // if (Axial_Seperation < min_Axial_Separation)
-    // {
-    //   continue;
-    // }
-    // if (< min_Axial_Separation)
-    // {
-    //   continue;
-    // }
+    IK_output = NeuroKinematics_.IK_solver(EP_R, TP_R);
+    Axial_Seperation = 143 + IK_output.AxialHeadTranslation - IK_output.AxialFeetTranslation;
+
+    if (Axial_Seperation > max_Axial_separation)
+    {
+      continue;
+    }
+    if (Axial_Seperation > max_Axial_separation || Axial_Seperation < min_Axial_separation) // Axial Heads are farther away than the allowed value or Axial Heads are closer than the allowed value
+    {
+      continue;
+    }
+    if (IK_output.AxialHeadTranslation < min_AxialHead_translation || IK_output.AxialHeadTranslation > max_AxialHead_translation) // If Axial Head travels more than the max or min allowed range
+    {
+      continue;
+    }
+    if (IK_output.AxialFeetTranslation < min_AxialFeet_translation || IK_output.AxialFeetTranslation > max_AxialFeet_translation) // If Axial Feet travels more than the max or min allowed range
+    {
+      continue;
+    }
+    if (IK_output.LateralTranslation < min_Lateral_translation || IK_output.LateralTranslation > max_Lateral_translation) // If Lateral travels more than the max or min allowed range
+    {
+      continue;
+    }
+    if (IK_output.YawRotation < min_Yaw_rotation || IK_output.YawRotation > max_Yaw_rotation) // If Yaw rotates more than the max or min allowed range
+    {
+      continue;
+    }
+    if (IK_output.PitchRotation < min_Pitch_rotation || IK_output.PitchRotation > max_Pitch_rotation) // If Pitch rotates more than the max or min allowed range
+    {
+      continue;
+    }
+    if (counter > 0)
+    { // This if statement will increase the size of the Sub-workspace matrix by one to store the new point
+      Sub_Workspace_PC.conservativeResize(3, Sub_Workspace_PC.cols() + 1);
+    }
+
+    // Storing the validated point in the final sub-workspace matrix
+    Sub_Workspace_PC(0, counter) = TP_R(0);
+    Sub_Workspace_PC(1, counter) = TP_R(1);
+    Sub_Workspace_PC(2, counter) = TP_R(2);
+
+    counter++;
   }
+  std::cout << "\nNumber of Points in the Sub_workspace: " << Sub_Workspace_PC.cols() << std::endl;
+  return Sub_Workspace_PC;
 }

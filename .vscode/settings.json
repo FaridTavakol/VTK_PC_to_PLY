@@ -55,5 +55,8 @@
     "string": "cpp",
     "*.ipp": "cpp"
   },
-  "C_Cpp.errorSquiggles": "Enabled"
+  "C_Cpp.errorSquiggles": "Enabled",
+  "cSpell.words": [
+    "Imager"
+  ]
 }

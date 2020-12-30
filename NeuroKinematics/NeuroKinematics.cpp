@@ -227,6 +227,10 @@ Neuro_IK_outputs NeuroKinematics::IK_solver(Eigen::Vector4d EntryPoint, Eigen::V
 	method. 
 	*/
 	Neuro_IK_outputs IK;
+	//**Temporary values**
+	IK.ProbeRotation = 0;
+	IK.ProbeInsertion = 0;
+
 	double AxialHeadTranslation{}, AxialFeetTranslation{}, LateralTranslation{}, yTrapezoidHypotenuseSquared{}, axialTrapezoidMidpoint{};
 	double yTrapezoidSideSquared{}, yTrapezoidInitialSeparationSquared{};
 	double zDeltaRCM{}, xDeltaRCM{}, yDeltaRCM{};

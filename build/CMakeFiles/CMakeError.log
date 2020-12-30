@@ -63,3 +63,54 @@ make: *** [cmTC_53655/fast] Error 2
 
 
 
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_8d40b && [1/2] Building C object CMakeFiles/cmTC_8d40b.dir/src.c.o
+[2/2] Linking C executable cmTC_8d40b
+FAILED: cmTC_8d40b 
+: && /usr/bin/clang-6.0 -DCMAKE_HAVE_LIBC_PTHREAD   CMakeFiles/cmTC_8d40b.dir/src.c.o  -o cmTC_8d40b   && :
+CMakeFiles/cmTC_8d40b.dir/src.c.o: In function `main':
+src.c:(.text+0x35): undefined reference to `pthread_create'
+src.c:(.text+0x41): undefined reference to `pthread_detach'
+src.c:(.text+0x4d): undefined reference to `pthread_cancel'
+src.c:(.text+0x5f): undefined reference to `pthread_join'
+src.c:(.text+0x76): undefined reference to `pthread_atfork'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+#include <pthread.h>
+
+void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/aimlab/Documents/NRI_Project/VTK/test_ply_writer/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_18a2e && [1/2] Building C object CMakeFiles/cmTC_18a2e.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_18a2e
+FAILED: cmTC_18a2e 
+: && /usr/bin/clang-6.0 -DCHECK_FUNCTION_EXISTS=pthread_create   CMakeFiles/cmTC_18a2e.dir/CheckFunctionExists.c.o  -o cmTC_18a2e  -lpthreads && :
+/usr/bin/ld: cannot find -lpthreads
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+ninja: build stopped: subcommand failed.
+
+
+

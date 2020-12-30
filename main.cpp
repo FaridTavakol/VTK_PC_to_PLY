@@ -102,15 +102,7 @@ int main(int argc, char *argv[])
     RCM_PC = ForwardKinematics_.get_RCM_PC(registration);
 
     // Test get_SubWorkspace method
-    Eigen::Vector3d EP_inImagerCoordinate(-100.2, 250, 85.0);
-    // Eigen::Matrix3Xf test = ForwardKinematics_.get_SubWorkspace(RCM_PC, EP_inImagerCoordinate, registration, NeuroKinematics_._probe->_robotToEntry);
-    Eigen::Vector4d EP(-41.3508, 238.923, 37.0847, 1);
-    Eigen::Vector4d TP(-46.68, 209.263, 27.91, 1);
-    Neuro_IK_outputs IK_output = ForwardKinematics_.NeuroKinematics_.IK_solver(EP, TP);
-    std::cout << "\nAxialFeetTranslation " << IK_output.AxialFeetTranslation;
-    std::cout << "\nAxialHeadTranslation " << IK_output.AxialHeadTranslation;
-    std::cout << "\nLateralTranslation " << IK_output.LateralTranslation;
-    std::cout << "\nYaw " << IK_output.YawRotation;
-    std::cout << "\nPitch " << IK_output.PitchRotation << std::endl;
-    // std::cout << "\nPI " << IK_output.ProbeInsertion;
+    Eigen::Vector3d EP_inImagerCoordinate(-41.3508, 238.923, 37.0847);
+    Eigen::Matrix3Xf Sub_Workspace_PC = ForwardKinematics_.get_SubWorkspace(RCM_PC, EP_inImagerCoordinate, registration, NeuroKinematics_._probe->_robotToEntry);
+    return 0;
 }
