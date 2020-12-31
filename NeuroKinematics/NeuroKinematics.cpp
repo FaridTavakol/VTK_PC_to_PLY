@@ -32,7 +32,6 @@ NeuroKinematics::NeuroKinematics()
 	zFrameToRCMRotation = Eigen::Matrix4d::Identity();
 	zFrameToRCMPrime = Eigen::Matrix4d::Identity();
 	RCMToTreatment = Eigen::Matrix4d::Identity();
-
 	xRotationDueToYawRotationIK = Eigen::Matrix3d::Identity();
 	yRotationDueToPitchRotationIK = Eigen::Matrix3d::Identity();
 	zRotationDueToProbeRotationIK = Eigen::Matrix3d::Identity();
@@ -136,17 +135,12 @@ Neuro_FK_outputs NeuroKinematics::ForwardKinematics(double AxialHeadTranslation,
 
 	// Now Calculate zFrame to RCM given the calculated values above
 	Eigen::Matrix4d zFrameToRCM = zFrameToRCMPrime * zFrameToRCMRotation;
-	// std::cout << "zFrameToRCM :  \n"
-	// 		  << zFrameToRCM << std::endl; // Added Farid
 
 	// Create RCM to Treatment Matrix
 	RCMToTreatment(2, 3) = ProbeInsertion + _probe->_robotToTreatmentAtHome - _robotToRCMOffset;
-	// std::cout << "RCMToTreatment :  \n"
-	// 		  << RCMToTreatment << std::endl; // Added Farid
+
 	// Finally calculate Base to Treatment zone using the measured transformation for RCM to Treatment
 	FK.zFrameToTreatment = zFrameToRCM * RCMToTreatment;
-	// std::cout << "zFrameToTreatment :  \n"
-	// 		  << FK.zFrameToTreatment << std::endl;
 
 	return FK;
 }

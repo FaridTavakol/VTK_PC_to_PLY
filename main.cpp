@@ -102,7 +102,12 @@ int main(int argc, char *argv[])
     RCM_PC = ForwardKinematics_.get_RCM_PC(registration);
 
     // Test get_SubWorkspace method
-    Eigen::Vector3d EP_inImagerCoordinate(-41.3508, 238.923, 37.0847);
+    Eigen::Vector3d EP_inImagerCoordinate(-71.416, 51.775, 52.897);
+    registration << 1., 0., 0., -.16,
+        0., 1., 0., -124.35,
+        0., 0., 1., 10.38,
+        0., 0., 0., 1.;
+
     Eigen::Matrix3Xf Sub_Workspace_PC = ForwardKinematics_.get_SubWorkspace(RCM_PC, EP_inImagerCoordinate, registration, NeuroKinematics_._probe->_robotToEntry);
     return 0;
 }

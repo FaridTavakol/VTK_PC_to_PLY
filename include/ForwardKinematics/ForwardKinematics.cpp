@@ -932,7 +932,8 @@ Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Ei
   Eigen::Vector3d EP_inRobotCoordinate(0.0, 0.0, 0.0);
   // Finds the location of the EP W.R.T the robot base
   calc_Transform(registration_inv, EP_inImagerCoordinate, EP_inRobotCoordinate);
-
+  std::cout << "EP_inRobotCoordinate is :\n"
+            << EP_inRobotCoordinate << std::endl;
   // Step to check individual points in the RCM Point cloud
   int no_of_cols_validated_pts{0};
 
@@ -966,7 +967,10 @@ Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Ei
   }
 
   // Step to check the Inverse Kinematics for each Validated RCM point
-  check_PointCloud_IK(Validated_PC, EP_inRobotCoordinate);
+  Eigen::Matrix3Xf Sub_Workspace_PC = get_PointCloud_IK(Validated_PC, EP_inRobotCoordinate);
+
+  create_3D_Mesh(Sub_Workspace_PC, EP_inRobotCoordinate);
+
   myout.close();
   return Validated_PC;
 }
@@ -1060,7 +1064,7 @@ bool ForwardKinematics::check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen
   A point (x, y, z) is inside the sphere with center (cx, cy, cz) and radius r if
   ( x-cx ) ^2 + (y-cy) ^2 + (z-cz) ^ 2 < r^2 */
   float B_value = probe_init;
-  const float radius = 72.5; // RCM offset from Robot to RCM point
+  const float radius = 72.5 - B_value; // RCM offset from Robot to RCM point
 
   float distance{0};
   distance = pow(EP_inRobotCoordinate(0) - RCM_point(0), 2) + pow(EP_inRobotCoordinate(1) - RCM_point(1), 2) + pow(EP_inRobotCoordinate(2) - RCM_point(2), 2);
@@ -1075,9 +1079,13 @@ bool ForwardKinematics::check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen
 }
 
 // Method to Check the IK for the Validated point set
-Eigen::Matrix3Xf ForwardKinematics::check_PointCloud_IK(Eigen::Matrix3Xf Validated_PC, Eigen::Vector3d EP_inRobotCoordinate)
+Eigen::Matrix3Xf ForwardKinematics::get_PointCloud_IK(Eigen::Matrix3Xf Validated_PC, Eigen::Vector3d EP_inRobotCoordinate)
 {
   Eigen::Matrix3Xf Sub_Workspace_PC(3, 1);
+  //Initializng the Sub_workspace matrix
+  Sub_Workspace_PC << 0.,
+      0.,
+      0.;
 
   int counter{0};
   // float B_value = NeuroKinematics_._probe->_robotToEntry; // B value
@@ -1160,6 +1168,90 @@ Eigen::Matrix3Xf ForwardKinematics::check_PointCloud_IK(Eigen::Matrix3Xf Validat
 
     counter++;
   }
-  std::cout << "\nNumber of Points in the Sub_workspace: " << Sub_Workspace_PC.cols() << std::endl;
+  if (Sub_Workspace_PC.cols() == 1 && Sub_Workspace_PC(0, 0) == 0. && Sub_Workspace_PC(1, 0) == 0. && Sub_Workspace_PC(2, 0) == 0.)
+  {
+    std::cerr << "\nThe entry point is NOT reachable! Please select another point." << std::endl;
+  }
+  else
+  {
+    std::cout << "\nNumber of Points in the Sub_workspace: " << Sub_Workspace_PC.cols() << std::endl;
+    ofstream myout("sub_workspace.xyz");
+    for (i = 0; i < Sub_Workspace_PC.cols(); i++)
+    {
+      myout << Sub_Workspace_PC(0, i) << " " << Sub_Workspace_PC(1, i) << " " << Sub_Workspace_PC(2, i) << " 0.00 0.00 0.00" << endl;
+    }
+    myout.close();
+  }
   return Sub_Workspace_PC;
+}
+
+// Method to create the 3D representing the sub-workspace
+Eigen::Matrix3Xf ForwardKinematics::create_3D_Mesh(Eigen::Matrix3Xf Sub_Workspace, Eigen::Vector3d EP_inRobotCoordinate)
+{
+  /* Step to create a full representative point cloud based on the sub-workspace
+  In this step, additional points will be added starting from the Entry Point and passing
+  through each RCM points which account for the full probe insertion. The final workspace will
+  be returned to the VTK method to generate the 3D mesh for visualization.*/
+  int no_cols = Sub_Workspace.cols();
+  float max_Probe_Insertion = 40.0; // Maximum range of motion for the Probe Insertion Axis
+  NeuroKinematics_.RCMToTreatment(2, 3);
+  float Dist_past_RCM = max_Probe_Insertion + NeuroKinematics_.RCMToTreatment(2, 3); // Max point where the treatment can reach past the RCM point
+  Eigen::Vector3d vector(0., 0., 0.);                                                // Vector starting from the entry point and ending at the RCM point
+  Eigen::Vector3d RCM_point(0., 0., 0.);
+  Eigen::Vector3d coordinate_of_last_point(0., 0., 0.);
+  Eigen::Vector3d intersection_point1(0., 0., 0.);
+  Eigen::Vector3d intersection_point2(0., 0., 0.);
+  int division{10}, counter{0};
+  // Number of desired points between the EP and the last point
+  Eigen::Matrix3Xf sub_workspace_PC(3, no_cols * division); // Matrix containing all the points within the sub-workspace starting from the EP to the last point
+  sub_workspace_PC = 0 * sub_workspace_PC;                  // initializing
+
+  /*To find the coordinate of the point past the RCM, a series of operations need to be evoked.
+  A sphere of size equal to "Dist_past_RCM" will be placed with it's origin at the RCM point.
+  The intersection of the line from the EP to the RCM point with this sphere will give the coordinate
+  of the point that the treatment will reach after passing the RCM.*/
+  double a{0}, b{0}, c{0}, t1{0}, t2{0}, x{0}, y{0}, z{0}; // coefficient to be found for the equation of line and it's intersection with the sphere
+  for (int i = 0; i < no_cols; i++)
+  {
+    RCM_point << Sub_Workspace(0, i), Sub_Workspace(1, i), Sub_Workspace(2, i);
+    // Finding the equation of a line for each pair of RCM and Entry points.
+    vector = RCM_point - EP_inRobotCoordinate;
+    a = pow(vector(0), 2) + pow(vector(1), 2) + pow(vector(2), 2);
+    b = a;
+    c = a - pow(Dist_past_RCM, 2);
+    t1 = -b + sqrt(pow(b, 2) - (4 * a * c)); // coefficients that will be plugged into the eq of line which give the intersection points
+    t1 = -b - sqrt(pow(b, 2) - (4 * a * c)); // coefficients that will be plugged into the eq of line which give the intersection points
+    intersection_point1 << EP_inRobotCoordinate(0) + vector(0) * t1, EP_inRobotCoordinate(1) + vector(1) * t1, EP_inRobotCoordinate(2) + vector(2) * t1;
+    intersection_point2 << EP_inRobotCoordinate(0) + vector(0) * t2, EP_inRobotCoordinate(1) + vector(1) * t2, EP_inRobotCoordinate(2) + vector(2) * t2;
+    double dist1 = sqrt(pow(intersection_point1(0) - EP_inRobotCoordinate(0), 2) + pow(intersection_point1(1) - EP_inRobotCoordinate(1), 2) + pow(intersection_point1(2) - EP_inRobotCoordinate(2), 2));
+    double dist2 = sqrt(pow(intersection_point2(0) - EP_inRobotCoordinate(0), 2) + pow(intersection_point2(1) - EP_inRobotCoordinate(1), 2) + pow(intersection_point2(2) - EP_inRobotCoordinate(2), 2));
+    if (dist1 > dist2)
+    {
+      coordinate_of_last_point = intersection_point1;
+    }
+    else
+    {
+      coordinate_of_last_point = intersection_point2;
+    }
+    x = abs(coordinate_of_last_point(0) - EP_inRobotCoordinate(0)) / division; // increments for x
+    y = abs(coordinate_of_last_point(1) - EP_inRobotCoordinate(1)) / division; // increments for y
+    z = abs(coordinate_of_last_point(2) - EP_inRobotCoordinate(2)) / division; // increments for z
+
+    for (int j = 1; j <= division; j++)
+    {
+      sub_workspace_PC(0, counter + j - 1) = EP_inRobotCoordinate(0) + x * j;
+      sub_workspace_PC(1, counter + j - 1) = EP_inRobotCoordinate(1) + y * j;
+      sub_workspace_PC(2, counter + j - 1) = EP_inRobotCoordinate(2) + z * j;
+    }
+    counter += 10;
+  }
+  std::cout << "\nnumber of points created for the final subworkspace: " << sub_workspace_PC.cols() << std::endl;
+  //creating a xyz pc for test
+  ofstream myout("final_sub_workspace.xyz");
+  for (i = 0; i < sub_workspace_PC.cols(); i++)
+  {
+    myout << sub_workspace_PC(0, i) << " " << sub_workspace_PC(1, i) << " " << sub_workspace_PC(2, i) << " 0.00 0.00 0.00" << endl;
+  }
+  myout.close();
+  return sub_workspace_PC;
 }

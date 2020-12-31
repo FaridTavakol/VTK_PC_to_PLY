@@ -8,7 +8,11 @@
                 "/usr/local/include/vtk-9.0",
                 "/home/aimlab/Documents/NRI_Project/VTK/VTK-build/Remote",
                 "/home/aimlab/Documents/NRI_Project/VTK/vtk/Remote/Powercrust",
-                "/home/aimlab/Documents/NRI_Project/VTK/vtk/Remote/PoissonReconstruction"
+                "/home/aimlab/Documents/NRI_Project/VTK/vtk/Remote/PoissonReconstruction",
+                "/usr/include/vtk-6.3",
+                "/usr/local/include/vtk-9.0",
+                "/usr/local/include/vtk-9.0",
+                "/usr/local/include/vtk-9.0"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
