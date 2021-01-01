@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
     RCM_PC = ForwardKinematics_.get_RCM_PC(registration);
 
     // Test get_SubWorkspace method
-    Eigen::Vector3d EP_inImagerCoordinate(-71.416, 51.775, 52.897);
+    Eigen::Vector3d EP_inImagerCoordinate(-71.416, 69.679, 52.713);
     registration << 1., 0., 0., -.16,
         0., 1., 0., -124.35,
         0., 0., 1., 10.38,

@@ -967,9 +967,9 @@ Eigen::Matrix3Xf ForwardKinematics::get_SubWorkspace(Eigen::Matrix3Xf RCM_PC, Ei
   }
 
   // Step to check the Inverse Kinematics for each Validated RCM point
-  Eigen::Matrix3Xf Sub_Workspace_PC = get_PointCloud_IK(Validated_PC, EP_inRobotCoordinate);
+  Eigen::Matrix3Xf Sub_Workspace_RCM = get_PointCloud_IK(Validated_PC, EP_inRobotCoordinate);
 
-  create_3D_Mesh(Sub_Workspace_PC, EP_inRobotCoordinate);
+  create_3D_Mesh(Sub_Workspace_RCM, EP_inRobotCoordinate);
 
   myout.close();
   return Validated_PC;
@@ -1081,9 +1081,9 @@ bool ForwardKinematics::check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen
 // Method to Check the IK for the Validated point set
 Eigen::Matrix3Xf ForwardKinematics::get_PointCloud_IK(Eigen::Matrix3Xf Validated_PC, Eigen::Vector3d EP_inRobotCoordinate)
 {
-  Eigen::Matrix3Xf Sub_Workspace_PC(3, 1);
+  Eigen::Matrix3Xf Sub_Workspace_PC_RCM(3, 1);
   //Initializng the Sub_workspace matrix
-  Sub_Workspace_PC << 0.,
+  Sub_Workspace_PC_RCM << 0.,
       0.,
       0.;
 
@@ -1158,50 +1158,52 @@ Eigen::Matrix3Xf ForwardKinematics::get_PointCloud_IK(Eigen::Matrix3Xf Validated
     }
     if (counter > 0)
     { // This if statement will increase the size of the Sub-workspace matrix by one to store the new point
-      Sub_Workspace_PC.conservativeResize(3, Sub_Workspace_PC.cols() + 1);
+      Sub_Workspace_PC_RCM.conservativeResize(3, Sub_Workspace_PC_RCM.cols() + 1);
     }
 
     // Storing the validated point in the final sub-workspace matrix
-    Sub_Workspace_PC(0, counter) = TP_R(0);
-    Sub_Workspace_PC(1, counter) = TP_R(1);
-    Sub_Workspace_PC(2, counter) = TP_R(2);
+    Sub_Workspace_PC_RCM(0, counter) = TP_R(0);
+    Sub_Workspace_PC_RCM(1, counter) = TP_R(1);
+    Sub_Workspace_PC_RCM(2, counter) = TP_R(2);
 
     counter++;
   }
-  if (Sub_Workspace_PC.cols() == 1 && Sub_Workspace_PC(0, 0) == 0. && Sub_Workspace_PC(1, 0) == 0. && Sub_Workspace_PC(2, 0) == 0.)
+  if (Sub_Workspace_PC_RCM.cols() == 1 && Sub_Workspace_PC_RCM(0, 0) == 0. && Sub_Workspace_PC_RCM(1, 0) == 0. && Sub_Workspace_PC_RCM(2, 0) == 0.)
   {
     std::cerr << "\nThe entry point is NOT reachable! Please select another point." << std::endl;
   }
   else
   {
-    std::cout << "\nNumber of Points in the Sub_workspace: " << Sub_Workspace_PC.cols() << std::endl;
-    ofstream myout("sub_workspace.xyz");
-    for (i = 0; i < Sub_Workspace_PC.cols(); i++)
+    std::cout << "\nNumber of Points in the Sub_workspace: " << Sub_Workspace_PC_RCM.cols() << std::endl;
+    ofstream myout("sub_workspace_RCM.xyz");
+    for (i = 0; i < Sub_Workspace_PC_RCM.cols(); i++)
     {
-      myout << Sub_Workspace_PC(0, i) << " " << Sub_Workspace_PC(1, i) << " " << Sub_Workspace_PC(2, i) << " 0.00 0.00 0.00" << endl;
+      myout << Sub_Workspace_PC_RCM(0, i) << " " << Sub_Workspace_PC_RCM(1, i) << " " << Sub_Workspace_PC_RCM(2, i) << " 0.00 0.00 0.00" << endl;
     }
+    myout << EP_inRobotCoordinate(0) << " " << EP_inRobotCoordinate(1) << " " << EP_inRobotCoordinate(2) << " 0.00 0.00 0.00" << endl;
     myout.close();
   }
-  return Sub_Workspace_PC;
+  return Sub_Workspace_PC_RCM;
 }
 
 // Method to create the 3D representing the sub-workspace
-Eigen::Matrix3Xf ForwardKinematics::create_3D_Mesh(Eigen::Matrix3Xf Sub_Workspace, Eigen::Vector3d EP_inRobotCoordinate)
+Eigen::Matrix3Xf ForwardKinematics::create_3D_Mesh(Eigen::Matrix3Xf Sub_Workspace_RCM, Eigen::Vector3d EP_inRobotCoordinate)
 {
   /* Step to create a full representative point cloud based on the sub-workspace
   In this step, additional points will be added starting from the Entry Point and passing
   through each RCM points which account for the full probe insertion. The final workspace will
   be returned to the VTK method to generate the 3D mesh for visualization.*/
-  int no_cols = Sub_Workspace.cols();
-  float max_Probe_Insertion = 40.0; // Maximum range of motion for the Probe Insertion Axis
-  NeuroKinematics_.RCMToTreatment(2, 3);
+
+  // Total number of points in the RCM sub-workspace
+  int no_cols = Sub_Workspace_RCM.cols();
+  float max_Probe_Insertion = 40.0;                                                  // Maximum range of motion for the Probe Insertion Axis
   float Dist_past_RCM = max_Probe_Insertion + NeuroKinematics_.RCMToTreatment(2, 3); // Max point where the treatment can reach past the RCM point
-  Eigen::Vector3d vector(0., 0., 0.);                                                // Vector starting from the entry point and ending at the RCM point
+  Eigen::Vector3d vector(0., 0., 0.);                                                // Vector starting from the entry point and ending at the RCM point,i.e. X2-X1
   Eigen::Vector3d RCM_point(0., 0., 0.);
   Eigen::Vector3d coordinate_of_last_point(0., 0., 0.);
   Eigen::Vector3d intersection_point1(0., 0., 0.);
   Eigen::Vector3d intersection_point2(0., 0., 0.);
-  int division{10}, counter{0};
+  int division{10}, counter{0}, counter1{0}; // division is the number of desired points to generate between the EP and the last point
   // Number of desired points between the EP and the last point
   Eigen::Matrix3Xf sub_workspace_PC(3, no_cols * division); // Matrix containing all the points within the sub-workspace starting from the EP to the last point
   sub_workspace_PC = 0 * sub_workspace_PC;                  // initializing
@@ -1213,14 +1215,14 @@ Eigen::Matrix3Xf ForwardKinematics::create_3D_Mesh(Eigen::Matrix3Xf Sub_Workspac
   double a{0}, b{0}, c{0}, t1{0}, t2{0}, x{0}, y{0}, z{0}; // coefficient to be found for the equation of line and it's intersection with the sphere
   for (int i = 0; i < no_cols; i++)
   {
-    RCM_point << Sub_Workspace(0, i), Sub_Workspace(1, i), Sub_Workspace(2, i);
+    RCM_point << Sub_Workspace_RCM(0, i), Sub_Workspace_RCM(1, i), Sub_Workspace_RCM(2, i);
     // Finding the equation of a line for each pair of RCM and Entry points.
     vector = RCM_point - EP_inRobotCoordinate;
-    a = pow(vector(0), 2) + pow(vector(1), 2) + pow(vector(2), 2);
-    b = a;
+    a = (pow(vector(0), 2) + pow(vector(1), 2) + pow(vector(2), 2));
+    b = -2 * a;
     c = a - pow(Dist_past_RCM, 2);
-    t1 = -b + sqrt(pow(b, 2) - (4 * a * c)); // coefficients that will be plugged into the eq of line which give the intersection points
-    t1 = -b - sqrt(pow(b, 2) - (4 * a * c)); // coefficients that will be plugged into the eq of line which give the intersection points
+    t1 = (-b + sqrt(pow(b, 2) - (4 * a * c))) / (2 * a); // coefficients that will be plugged into the eq of line which give the intersection points
+    t2 = (-b - sqrt(pow(b, 2) - (4 * a * c))) / (2 * a); // coefficients that will be plugged into the eq of line which give the intersection points
     intersection_point1 << EP_inRobotCoordinate(0) + vector(0) * t1, EP_inRobotCoordinate(1) + vector(1) * t1, EP_inRobotCoordinate(2) + vector(2) * t1;
     intersection_point2 << EP_inRobotCoordinate(0) + vector(0) * t2, EP_inRobotCoordinate(1) + vector(1) * t2, EP_inRobotCoordinate(2) + vector(2) * t2;
     double dist1 = sqrt(pow(intersection_point1(0) - EP_inRobotCoordinate(0), 2) + pow(intersection_point1(1) - EP_inRobotCoordinate(1), 2) + pow(intersection_point1(2) - EP_inRobotCoordinate(2), 2));
@@ -1229,7 +1231,7 @@ Eigen::Matrix3Xf ForwardKinematics::create_3D_Mesh(Eigen::Matrix3Xf Sub_Workspac
     {
       coordinate_of_last_point = intersection_point1;
     }
-    else
+    else if (dist1 < dist2)
     {
       coordinate_of_last_point = intersection_point2;
     }
@@ -1239,9 +1241,23 @@ Eigen::Matrix3Xf ForwardKinematics::create_3D_Mesh(Eigen::Matrix3Xf Sub_Workspac
 
     for (int j = 1; j <= division; j++)
     {
-      sub_workspace_PC(0, counter + j - 1) = EP_inRobotCoordinate(0) + x * j;
-      sub_workspace_PC(1, counter + j - 1) = EP_inRobotCoordinate(1) + y * j;
-      sub_workspace_PC(2, counter + j - 1) = EP_inRobotCoordinate(2) + z * j;
+      if (EP_inRobotCoordinate(0) < coordinate_of_last_point(0))
+      {
+        sub_workspace_PC(0, counter + j - 1) = EP_inRobotCoordinate(0) + (x * j);
+      }
+      else if (EP_inRobotCoordinate(0) > coordinate_of_last_point(0))
+      {
+        sub_workspace_PC(0, counter + j - 1) = EP_inRobotCoordinate(0) - (x * j);
+      }
+      sub_workspace_PC(1, counter + j - 1) = EP_inRobotCoordinate(1) - (y * j);
+      if (EP_inRobotCoordinate(2) < coordinate_of_last_point(2))
+      {
+        sub_workspace_PC(2, counter + j - 1) = EP_inRobotCoordinate(2) + (z * j);
+      }
+      else if (EP_inRobotCoordinate(2) > coordinate_of_last_point(2))
+      {
+        sub_workspace_PC(2, counter + j - 1) = EP_inRobotCoordinate(2) - (z * j);
+      }
     }
     counter += 10;
   }

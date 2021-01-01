@@ -45,5 +45,5 @@ public:
     void store_Point(Eigen::Matrix3Xf &RCM_Point_cloud, Eigen::Vector4d &transferred_Point, int counter);
     bool check_Sphere(Eigen::Vector3d EP_inRobotCoordinate, Eigen::Vector3f RCM_point, double probe_init);
     Eigen::Matrix3Xf get_PointCloud_IK(Eigen::Matrix3Xf Validated_PC, Eigen::Vector3d EP_inRobotCoordinate);
-    Eigen::Matrix3Xf create_3D_Mesh(Eigen::Matrix3Xf Sub_Workspace, Eigen::Vector3d EP_inRobotCoordinate);
+    Eigen::Matrix3Xf create_3D_Mesh(Eigen::Matrix3Xf Sub_Workspace_RCM, Eigen::Vector3d EP_inRobotCoordinate);
 };
